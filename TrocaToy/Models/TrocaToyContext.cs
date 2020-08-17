@@ -54,11 +54,11 @@ namespace TrocaToy.Models
 
             modelBuilder.Entity<Brinquedo>(entity =>
             {
-                entity.HasOne(d => d.IdUsuarioNavigation);
-                   // .WithMany(p => p.Brinquedo)
-                   //.HasForeignKey(d => d.IdUsuario)
-                   //.OnDelete(DeleteBehavior.ClientSetNull)
-                   //.HasConstraintName("FK_Brinquedo_Usuario");
+                entity.HasOne(d => d.IdUsuarioNavigation)
+                    .WithMany(p => p.Brinquedo)
+                   .HasForeignKey(d => d.IdUsuario)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_Brinquedo_Usuario");
             });
 
             modelBuilder.Entity<Cidade>(entity =>
@@ -88,11 +88,11 @@ namespace TrocaToy.Models
                     .HasForeignKey(d => d.CodEstado)
                     .HasConstraintName("FK_Endereco_Estado");
 
-                entity.HasOne(d => d.IdUsuarioNavigation);
-                    //.WithMany(p => p.Endereco)
-                   // .HasForeignKey(d => d.IdUsuario)
-                    //.OnDelete(DeleteBehavior.ClientSetNull)
-                    // .HasConstraintName("FK_Endereco_Usuario");
+                entity.HasOne(d => d.IdUsuarioNavigation)
+                    .WithMany(p => p.Endereco)
+                    .HasForeignKey(d => d.IdUsuario)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                     .HasConstraintName("FK_Endereco_Usuario");
             });
 
             modelBuilder.Entity<Estado>(entity =>
@@ -117,21 +117,20 @@ namespace TrocaToy.Models
 
             modelBuilder.Entity<Proposta>(entity =>
             {
-                //entity.HasOne(d => d.IdUsuarioRequisitadoNavigation)
-                //    .WithMany(p => p.PropostaIdUsuarioRequisitadoNavigation)
-                //    .HasForeignKey(d => d.IdUsuarioRequisitado)
-                //    .HasConstraintName("FK_Proposta_Usuario");
+                entity.HasOne(d => d.IdUsuarioRequisitadoNavigation)
+                    .WithMany(p => p.PropostaIdUsuarioRequisitadoNavigation)
+                    .HasForeignKey(d => d.IdUsuarioRequisitado)
+                    .HasConstraintName("FK_Proposta_Usuario");
 
-                //entity.HasOne(d => d.IdUsuarioSolicitanteNavigation)
-                //    .WithMany(p => p.PropostaIdUsuarioSolicitanteNavigation)
-                //    .HasForeignKey(d => d.IdUsuarioSolicitante)
-                //    .HasConstraintName("FK_Proposta_Usuario1");
+                entity.HasOne(d => d.IdUsuarioSolicitanteNavigation)
+                    .WithMany(p => p.PropostaIdUsuarioSolicitanteNavigation)
+                    .HasForeignKey(d => d.IdUsuarioSolicitante)
+                    .HasConstraintName("FK_Proposta_Usuario1");
             });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Cpf)
                     .IsRequired()
                     .HasColumnName("CPF");
@@ -139,6 +138,7 @@ namespace TrocaToy.Models
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(50);
+
 
                 entity.Property(e => e.Nome).IsRequired();
 

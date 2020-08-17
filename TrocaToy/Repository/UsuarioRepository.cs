@@ -21,11 +21,11 @@ namespace TrocaToy.Repository
             obj.Regra = string.IsNullOrEmpty(obj.Regra) ? RegraUsuario.Usuario.ToString() : obj.Regra;
 
             string cpfValue = obj.Cpf;
-            if (this.GetByCretiria(x => x.Cpf == obj.Cpf).Any())
+            if (this.GetByCriteria(x => x.Cpf == obj.Cpf).Any())
             {
                 throw new Exception("Já existe usuário com o cpf cadastrado!");
             }
-            if (this.GetByCretiria(x => x.Email == obj.Email).Any())
+            if (this.GetByCriteria(x => x.Email == obj.Email).Any())
             {
                 throw new Exception("Já existe usuário com o email cadastrado!");
             }

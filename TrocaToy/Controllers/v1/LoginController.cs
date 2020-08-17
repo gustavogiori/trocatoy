@@ -29,7 +29,7 @@ namespace TrocaToy.Controllers.v1
         {
             var userModel = model.ToObject<Usuario>();
             // Recupera o usuário
-            var user = _usuarioRepository.GetByCretiria(x => x.Email == userModel.Email && x.Senha == userModel.Senha).FirstOrDefault();
+            var user = _usuarioRepository.GetByCriteria(x => x.Email == userModel.Email && x.Senha == MD5Operation.GerarHashMd5(userModel.Senha)).FirstOrDefault();
 
             // Verifica se o usuário existe
             if (user == null)

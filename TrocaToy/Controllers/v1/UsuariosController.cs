@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Json;
 using Infrastructure.UnitWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using TrocaToy.Controllers.v1;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 
@@ -30,13 +32,15 @@ namespace TrocaToy.Controllers
 
         // GET: api/Usuarios
         [HttpGet]
+        [Authorize]
         public string GetUsuario()
         {
-            return Infrastructure.Json.JsonService<List<Usuario>>.GetJson(_usuarioRepository.GetAll().ToList());
+            return JsonService<List<Usuario>>.GetJson(_usuarioRepository.GetAll().ToList());
         }
 
         // GET: api/Usuarios/5
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<Usuario> GetUsuario(int id)
         {
             var usuario = _usuarioRepository.GetById(id);
@@ -50,6 +54,7 @@ namespace TrocaToy.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
+        [Authorize]
         public ActionResult<Usuario> PutUsuario(int id, Usuario usuario)
         {
             if (id != usuario.Id)
@@ -108,7 +113,7 @@ namespace TrocaToy.Controllers
                 _unitOfWork.Rollback();
                 return BadRequest(ModelState);
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
                 _unitOfWork.Rollback();
 
@@ -126,6 +131,7 @@ namespace TrocaToy.Controllers
 
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
+        [Authorize]
         public ActionResult<Usuario> DeleteUsuario(int id)
         {
             var usuarioExiste = UsuarioExists(id);

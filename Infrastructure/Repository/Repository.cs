@@ -43,7 +43,7 @@ namespace Infrastructure
             _context.SaveChanges();
         }
 
-        public virtual IEnumerable<T> GetByCretiria(Func<T, bool> predicate)
+        public virtual IEnumerable<T> GetByCriteria(Func<T, bool> predicate)
         {
             return table.Where(predicate);
         }
