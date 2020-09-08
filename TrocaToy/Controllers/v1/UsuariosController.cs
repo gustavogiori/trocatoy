@@ -30,15 +30,27 @@ namespace TrocaToy.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: api/Usuarios
+        // Get api/v1/usuarios
+        /// <summary>
+        /// Retornar todos os usuários
+        /// </summary>
+        /// <returns>Lista de usuários</returns>
+        /// <response code="200">Retorna lista com todos usuários</response>
+        /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
         [Authorize]
-        public string GetUsuario()
+        public List<Usuario> GetUsuario()
         {
-            return JsonService<List<Usuario>>.GetJson(_usuarioRepository.GetAll().ToList());
+            return JsonService<List<Usuario>>.GetObject(_usuarioRepository.GetAll().ToList());
         }
 
-        // GET: api/Usuarios/5
+        /// Get api/v1/usuarios/id
+        /// <summary>
+        /// Retorna usuário conforme ID
+        /// </summary>
+        /// <returns>Lista de usuários</returns>
+        /// <response code="200">Retorna o usuário conforme ID</response>
+        /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet("{id}")]
         [Authorize]
         public ActionResult<Usuario> GetUsuario(int id)
@@ -49,10 +61,21 @@ namespace TrocaToy.Controllers
 
             return Ok(usuario);
         }
+        private Usuario GetUsuarioComValorDeDadosNaoEditaveis(Usuario usuarioBanco, Usuario usuarioRequest)
+        {
+            usuarioRequest.Regra = usuarioBanco.Regra;
+            return usuarioRequest;
+        }
+        /// Put api/v1/usuarios/id
+        /// <summary>
+        /// Altera dados do usuário
+        /// </summary>
+        /// <returns>Lista de usuários</returns>
+        /// <response code="204">Retorna se o usuário foi alterado com sucesso</response>
+        /// <response code="400">Retorna se houve algum erro na alteração do usuário.</response>
+        /// <response code="404">Retorna se o usuário não foi encontrado.</response>
+        /// <response code="401">Retorna quando não estiver autenticado.</response>
 
-        // PUT: api/Usuarios/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         [Authorize]
         public ActionResult<Usuario> PutUsuario(int id, Usuario usuario)
@@ -67,6 +90,7 @@ namespace TrocaToy.Controllers
                 ModelState.Clear();
                 if (this.TryValidateModel(usuario))
                 {
+                    usuario = GetUsuarioComValorDeDadosNaoEditaveis(usuario, _usuarioRepository.GetById(usuario.Id));
                     _usuarioRepository.Update(usuario);
                     _unitOfWork.Commit();
 
@@ -92,16 +116,20 @@ namespace TrocaToy.Controllers
             }
         }
 
-        // POST: api/Usuarios
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        /// Put api/v1/usuarios/id
+        /// <summary>
+        /// Altera dados do usuário
+        /// </summary>
+        /// <returns>Lista de usuários</returns>
+        /// <response code="201">Retorna se o usuário foi criado com sucesso</response>
+        /// <response code="400">Retorna se houve algum erro na criação do usuário.</response>
         [HttpPost]
-        public ActionResult<Usuario> PostUsuario([FromBody] JObject json)
+        public ActionResult<Usuario> PostUsuario([FromBody] Usuario json)
         {
             Usuario usuario = new Usuario();
             try
             {
-                usuario = json.ToObject<Usuario>();
+                usuario = JsonService<Usuario>.GetObject(json);
                 ModelState.Clear();
                 if (this.TryValidateModel(usuario))
                 {
@@ -119,17 +147,29 @@ namespace TrocaToy.Controllers
 
                 if (UsuarioExists(usuario.Id))
                 {
-                    return Conflict();
+                    return Conflict(ex.Message);
                 }
                 else
                 {
-                    throw;
+                    throw ex;
                 }
             }
-
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return BadRequest(ex.Message);
+            }
         }
 
-        // DELETE: api/Usuarios/5
+        /// Delete api/v1/usuarios/id
+        /// <summary>
+        /// Altera dados do usuário
+        /// </summary>
+        /// <returns>Lista de usuários</returns>
+        /// <response code="200">Retorna se o usuário foi deletado com sucesso.</response>
+        /// <response code="409">Retorna se houve algum erro na deleção do usuário.</response>
+        /// <response code="404">Retorna se o usuário não foi encontrado.</response>
+        /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpDelete("{id}")]
         [Authorize]
         public ActionResult<Usuario> DeleteUsuario(int id)

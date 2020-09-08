@@ -12,9 +12,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using TrocaToy.Models;
 using TrocaToy.Repository;
+using TrocaToy.Utils.General;
 
 namespace TrocaToy
 {
@@ -47,6 +52,42 @@ namespace TrocaToy
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             });
             services.AddCors();
+
+            services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+            });
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Troca Toy API",
+                    Version = "v1",
+                    Description = "API da aplicação Troca Toy",
+                    
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
+                {
+                    Name = "Bearer",
+                    BearerFormat = "JWT",
+                    Scheme = "bearer",
+                    Description = "Specify the authorization token.",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                };
+
+                options.AddSecurityDefinition("jwt_auth", securityDefinition);
+            });
+            _ = services.AddVersionedApiExplorer(o =>
+              {
+                  o.GroupNameFormat = "'v'VVV";
+                  o.SubstituteApiVersionInUrl = true;
+              });
 
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -109,7 +150,8 @@ namespace TrocaToy
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSwagger();
+            app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Troca Toy"));
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

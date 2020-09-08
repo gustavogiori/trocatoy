@@ -23,11 +23,19 @@ namespace TrocaToy.Controllers.v1
             this._usuarioRepository = usuarioRepository;
         }
 
+        // POST api/v1/login
+        /// <summary>
+        /// Realiza login na aplicação
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Um novo item criado</returns>
+        /// <response code="200">Retorna quando o usuário e senha está correto, e retorna também o token para autenticação</response>
+        /// <response code="404">Retorna se o usuário ou senha estiverem errados.</response>    
         [HttpPost]
         [Route("login")]
-        public ActionResult<dynamic> Authenticate(JObject model)
+        public ActionResult<dynamic> Authenticate(UsuarioLogin model)
         {
-            var userModel = model.ToObject<Usuario>();
+            var userModel = model;
             // Recupera o usuário
             var user = _usuarioRepository.GetByCriteria(x => x.Email == userModel.Email && x.Senha == MD5Operation.GerarHashMd5(userModel.Senha)).FirstOrDefault();
 

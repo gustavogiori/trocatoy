@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TrocaToy</name>
+    </assembly>
+    <members>
+        <member name="M:TrocaToy.Controllers.v1.LoginController.Authenticate(TrocaToy.Models.UsuarioLogin)">
+            <summary>
+            Realiza login na aplicação
+            </summary>
+            <param name="model"></param>
+            <returns>Um novo item criado</returns>
+            <response code="200">Retorna quando o usuário e senha está correto, e retorna também o token para autenticação</response>
+            <response code="404">Retorna se o usuário ou senha estiverem errados.</response>    
+        </member>
+        <member name="M:TrocaToy.Controllers.UsuariosController.GetUsuario">
+            <summary>
+            Retornar todos os usuários
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna lista com todos usuários</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.UsuariosController.GetUsuario(System.Int32)">
+            Get api/v1/usuarios/id
+            <summary>
+            Retorna usuário conforme ID
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna o usuário conforme ID</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.UsuariosController.PutUsuario(System.Int32,TrocaToy.Models.Usuario)">
+            Put api/v1/usuarios/id
+            <summary>
+            Altera dados do usuário
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="204">Retorna se o usuário foi alterado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na alteração do usuário.</response>
+            <response code="404">Retorna se o usuário não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.UsuariosController.PostUsuario(TrocaToy.Models.Usuario)">
+            Put api/v1/usuarios/id
+            <summary>
+            Altera dados do usuário
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="201">Retorna se o usuário foi criado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na criação do usuário.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.UsuariosController.DeleteUsuario(System.Int32)">
+            Delete api/v1/usuarios/id
+            <summary>
+            Altera dados do usuário
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna se o usuário foi deletado com sucesso.</response>
+            <response code="409">Retorna se houve algum erro na deleção do usuário.</response>
+            <response code="404">Retorna se o usuário não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+    </members>
+</doc>

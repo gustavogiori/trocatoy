@@ -11,6 +11,11 @@ namespace Infrastructure.Json
         {
             return JsonConvert.DeserializeObject<T>(json);
         }
+        public static T GetObject(T objeto)
+        {
+            var json = GetJson(objeto);
+            return GetObject(json);
+        }
         public static string GetJson(T objeto)
         {
             Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();

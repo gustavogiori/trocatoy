@@ -29,7 +29,7 @@ namespace TrocaToy.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=.\\sqlexpress;Initial Catalog=TrocaToy;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-GTU7Q8L;Initial Catalog=TrocaToy;Integrated Security=True");
             }
         }
 
@@ -54,11 +54,11 @@ namespace TrocaToy.Models
 
             modelBuilder.Entity<Brinquedo>(entity =>
             {
-                entity.HasOne(d => d.IdUsuarioNavigation)
-                    .WithMany(p => p.Brinquedo)
-                   .HasForeignKey(d => d.IdUsuario)
-                   .OnDelete(DeleteBehavior.ClientSetNull)
-                   .HasConstraintName("FK_Brinquedo_Usuario");
+                //entity.HasOne(d => d.IdUsuarioNavigation)
+                //    .WithMany(p => p.Brinquedo)
+                //   .HasForeignKey(d => d.IdUsuario)
+                //   .OnDelete(DeleteBehavior.ClientSetNull)
+                //   .HasConstraintName("FK_Brinquedo_Usuario");
             });
 
             modelBuilder.Entity<Cidade>(entity =>
@@ -87,12 +87,6 @@ namespace TrocaToy.Models
                     .WithMany(p => p.Endereco)
                     .HasForeignKey(d => d.CodEstado)
                     .HasConstraintName("FK_Endereco_Estado");
-
-                entity.HasOne(d => d.IdUsuarioNavigation)
-                    .WithMany(p => p.Endereco)
-                    .HasForeignKey(d => d.IdUsuario)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                     .HasConstraintName("FK_Endereco_Usuario");
             });
 
             modelBuilder.Entity<Estado>(entity =>
@@ -115,18 +109,6 @@ namespace TrocaToy.Models
                     .HasConstraintName("FK_Table_2_Proposta");
             });
 
-            modelBuilder.Entity<Proposta>(entity =>
-            {
-                entity.HasOne(d => d.IdUsuarioRequisitadoNavigation)
-                    .WithMany(p => p.PropostaIdUsuarioRequisitadoNavigation)
-                    .HasForeignKey(d => d.IdUsuarioRequisitado)
-                    .HasConstraintName("FK_Proposta_Usuario");
-
-                entity.HasOne(d => d.IdUsuarioSolicitanteNavigation)
-                    .WithMany(p => p.PropostaIdUsuarioSolicitanteNavigation)
-                    .HasForeignKey(d => d.IdUsuarioSolicitante)
-                    .HasConstraintName("FK_Proposta_Usuario1");
-            });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
