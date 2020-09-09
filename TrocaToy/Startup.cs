@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Text;
 using TrocaToy.Models;
 using TrocaToy.Repository;
+using TrocaToy.Utils;
 using TrocaToy.Utils.General;
 
 namespace TrocaToy
@@ -66,8 +67,9 @@ namespace TrocaToy
                     Title = "Troca Toy API",
                     Version = "v1",
                     Description = "API da aplicação Troca Toy",
-                    
+
                 });
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
@@ -113,6 +115,7 @@ namespace TrocaToy
             services.AddControllersWithViews();
             services.AddDbContext<DbContext, TrocaToyContext>();
             services.AddTransient<IUsuarioRepository, UsuarioRepository>();
+            services.AddTransient<IBrinquedoRepository, BrinquedoRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -134,7 +137,6 @@ namespace TrocaToy
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())

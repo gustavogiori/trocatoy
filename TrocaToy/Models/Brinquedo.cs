@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrocaToy.Models
 {
@@ -17,7 +17,9 @@ namespace TrocaToy.Models
         public string Marca { get; set; }
         public bool? Novo { get; set; }
 
+        [ForeignKey("IdUsuario")]
         public virtual Usuario IdUsuarioNavigation { get; set; }
+
         public virtual ICollection<Anuncio> Anuncio { get; set; }
         public virtual ICollection<ItensProposta> ItensProposta { get; set; }
     }
