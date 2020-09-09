@@ -7,6 +7,9 @@ using TrocaToy.Models;
 
 namespace TrocaToy.Repository
 {
+    /// <summary>
+    /// Interface repositório usuário
+    /// </summary>
     public interface IUsuarioRepository : IRepository<Usuario>
     {
     }

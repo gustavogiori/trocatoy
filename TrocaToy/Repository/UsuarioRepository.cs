@@ -8,13 +8,24 @@ using TrocaToy.Models;
 
 namespace TrocaToy.Repository
 {
+    /// <summary>
+    /// Repositorio crud Usuario
+    /// </summary>
     public class UsuarioRepository : Infrastructure.Repository<Models.Usuario>, IUsuarioRepository
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
         public UsuarioRepository(DbContext context) : base(context)
         {
 
         }
 
+        /// <summary>
+        /// Insere novo usuário
+        /// </summary>
+        /// <param name="obj"></param>
         public override void Insert(Usuario obj)
         {
             obj.Senha = MD5Operation.GerarHashMd5(obj.Senha);

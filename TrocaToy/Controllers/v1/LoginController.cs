@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Models;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,8 +44,10 @@ namespace TrocaToy.Controllers.v1
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválidos" });
 
+            model.SetNivelPermissao(Convert.ToInt32(user.Regra));
+
             // Gera o Token
-            var token = TokenService.GenerateToken(user);
+            var token = TokenService.GenerateToken(model);
 
             // Oculta a senha
             user.Senha = "";

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Infrastructure
@@ -43,7 +44,7 @@ namespace Infrastructure
             _context.SaveChanges();
         }
 
-        public virtual IEnumerable<T> GetByCriteria(Func<T, bool> predicate)
+        public virtual IEnumerable<T> GetByCriteria(Expression<Func<T, bool>> predicate)
         {
             return table.Where(predicate);
         }

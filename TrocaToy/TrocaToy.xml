@@ -4,7 +4,79 @@
         <name>TrocaToy</name>
     </assembly>
     <members>
-        <member name="M:TrocaToy.Controllers.v1.LoginController.Authenticate(TrocaToy.Models.UsuarioLogin)">
+        <member name="T:TrocaToy.Controllers.v1.BaseController">
+            <summary>
+            Controle base
+            </summary>
+        </member>
+        <member name="F:TrocaToy.Controllers.v1.BaseController._context">
+            <summary>
+            Base de dados
+            </summary>
+        </member>
+        <member name="F:TrocaToy.Controllers.v1.BaseController._unitOfWork">
+            <summary>
+            Unidade de trabalho
+            </summary>
+        </member>
+        <member name="T:TrocaToy.Controllers.v1.BrinquedosController">
+            <summary>
+            Controler brinquedos
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,TrocaToy.Repository.IBrinquedoRepository)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+            <param name="unitOfWork"></param>
+            <param name="brinquedoRepository"></param>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo">
+            <summary>
+            Retornar todos os brinquedos
+            </summary>
+            <returns>Lista de brinquedos</returns>
+            <response code="200">Retorna lista com todos brinquedos</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedoCriteria(System.String,System.String)">
+            <summary>
+            Retorna brinquedo conforme ID
+            </summary>
+            <returns>Brinquedo conforme id</returns>
+            <response code="200">Retorna o brinquedo conforme ID</response>
+            <response code="404">Retorna quando não tiver encontrado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo(System.Int32)">
+            <summary>
+            Retorna brinquedo conforme ID
+            </summary>
+            <returns>Brinquedo conforme id</returns>
+            <response code="200">Retorna o brinquedo conforme ID</response>
+            <response code="404">Retorna quando não tiver encontrado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.PutBrinquedo(System.Int32,TrocaToy.Models.Brinquedo)">
+            Put api/v1/brinquedos/id
+            <summary>
+            Altera dados do brinquedo
+            </summary>
+            <returns>Brinquedo</returns>
+            <response code="204">Retorna se o brinquedo foi alterado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na alteração do usuário.</response>
+            <response code="404">Retorna se o brinquedo não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.PostBrinquedo(TrocaToy.Models.Brinquedo)">
+            Put api/v1/brinquedos/id
+            <summary>
+            Altera dados do binquedo
+            </summary>
+            <returns>Brinquedo</returns>
+            <response code="201">Retorna se o brinquedo foi criado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na criação do usuário.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.LoginController.Authenticate(Infrastructure.Models.UsuarioLogin)">
             <summary>
             Realiza login na aplicação
             </summary>
@@ -12,6 +84,19 @@
             <returns>Um novo item criado</returns>
             <response code="200">Retorna quando o usuário e senha está correto, e retorna também o token para autenticação</response>
             <response code="404">Retorna se o usuário ou senha estiverem errados.</response>    
+        </member>
+        <member name="T:TrocaToy.Controllers.UsuariosController">
+            <summary>
+            Controle usuário
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Controllers.UsuariosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,TrocaToy.Repository.IUsuarioRepository)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+            <param name="usuarioRepository"></param>
+            <param name="unitOfWork"></param>
         </member>
         <member name="M:TrocaToy.Controllers.UsuariosController.GetUsuario">
             <summary>
@@ -60,6 +145,39 @@
             <response code="409">Retorna se houve algum erro na deleção do usuário.</response>
             <response code="404">Retorna se o usuário não foi encontrado.</response>
             <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="T:TrocaToy.Repository.BrinquedoRepository">
+            <summary>
+            Repositorio para criação de brinquedos
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Repository.BrinquedoRepository.#ctor(Microsoft.EntityFrameworkCore.DbContext)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context">Context banco de dados</param>
+        </member>
+        <member name="T:TrocaToy.Repository.IUsuarioRepository">
+            <summary>
+            Interface repositório usuário
+            </summary>
+        </member>
+        <member name="T:TrocaToy.Repository.UsuarioRepository">
+            <summary>
+            Repositorio crud Usuario
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Repository.UsuarioRepository.#ctor(Microsoft.EntityFrameworkCore.DbContext)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:TrocaToy.Repository.UsuarioRepository.Insert(TrocaToy.Models.Usuario)">
+            <summary>
+            Insere novo usuário
+            </summary>
+            <param name="obj"></param>
         </member>
     </members>
 </doc>

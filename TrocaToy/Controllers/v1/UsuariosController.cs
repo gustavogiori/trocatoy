@@ -15,19 +15,25 @@ using TrocaToy.Repository;
 
 namespace TrocaToy.Controllers
 {
+    /// <summary>
+    /// Controle usuário
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class UsuariosController : ControllerBase
+
+    public class UsuariosController : BaseController
     {
-        private readonly DbContext _context;
         IUsuarioRepository _usuarioRepository;
-        IUnitOfWork _unitOfWork;
-        public UsuariosController(DbContext context, IUsuarioRepository usuarioRepository, IUnitOfWork unitOfWork)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="usuarioRepository"></param>
+        /// <param name="unitOfWork"></param>
+        public UsuariosController(DbContext context, IUnitOfWork unitOfWork, IUsuarioRepository usuarioRepository) : base(context, unitOfWork)
         {
-            _context = context;
             _usuarioRepository = usuarioRepository;
-            _unitOfWork = unitOfWork;
         }
 
         // Get api/v1/usuarios

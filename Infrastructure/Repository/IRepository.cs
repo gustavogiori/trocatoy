@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Infrastructure
@@ -7,7 +8,7 @@ namespace Infrastructure
     public interface IRepository<T> where T : class
     {
         IEnumerable<T> GetAll();
-        IEnumerable<T> GetByCriteria(Func<T, bool> predicate);
+        IEnumerable<T> GetByCriteria(Expression<Func<T, bool>> predicate);
         T GetById(object id);
         void Insert(T obj);
         void Update(T obj);
