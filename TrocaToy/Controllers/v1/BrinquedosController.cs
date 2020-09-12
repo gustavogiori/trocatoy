@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Filter;
+using Infrastructure.Helpers;
 using Infrastructure.Json;
 using Infrastructure.Query;
+using Infrastructure.Services;
 using Infrastructure.UnitWork;
+using Infrastructure.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +33,9 @@ namespace TrocaToy.Controllers.v1
         /// </summary>
         /// <param name="context"></param>
         /// <param name="unitOfWork"></param>
+        /// <param name="uriService"></param>
         /// <param name="brinquedoRepository"></param>
-        public BrinquedosController(DbContext context, IUnitOfWork unitOfWork, IBrinquedoRepository brinquedoRepository) : base(context, unitOfWork)
+        public BrinquedosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IBrinquedoRepository brinquedoRepository) : base(context, unitOfWork, uriService)
         {
             _brinquedoRepository = brinquedoRepository;
         }
@@ -43,9 +48,14 @@ namespace TrocaToy.Controllers.v1
         /// <response code="200">Retorna lista com todos brinquedos</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
-        public List<Brinquedo> GetBrinquedo()
+        public ActionResult<PagedResponse<List<Brinquedo>>> GetBrinquedo([FromQuery] PaginationFilter filter)
         {
-            return JsonService<List<Brinquedo>>.GetObject(_brinquedoRepository.GetAll().ToList());
+            var route = Request.Path.Value;
+            int countPages = 0;
+            var pagedData = _brinquedoRepository.GetAll(filter, out countPages).ToList();
+            PagedResponse<List<Brinquedo>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
+
+            return Ok(pagedReponse);
         }
 
         /// <summary>
@@ -55,10 +65,14 @@ namespace TrocaToy.Controllers.v1
         /// <response code="200">Retorna o brinquedo conforme ID</response>
         /// <response code="404">Retorna quando não tiver encontrado.</response>
         [HttpGet, Route("GetBrinquedoCriteria")]
-        public ActionResult<List<Brinquedo>> GetBrinquedoCriteria(string campo, string valor)
+        public ActionResult<List<Brinquedo>> GetBrinquedoCriteria(string campo, string valor, [FromQuery] PaginationFilter filter)
         {
-            var brinquedo = _brinquedoRepository.GetByCriteria(QueryService<Brinquedo>.GetCriteria(campo, valor));
-            return Ok(brinquedo);
+            var route = Request.Path.Value;
+            int countPages = 0;
+            var pagedData = _brinquedoRepository.GetByCriteria(QueryService<Brinquedo>.GetCriteria(campo, valor), filter, out countPages).ToList();
+            PagedResponse<List<Brinquedo>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
+
+            return Ok(pagedReponse);
         }
 
         /// <summary>
@@ -68,7 +82,7 @@ namespace TrocaToy.Controllers.v1
         /// <response code="200">Retorna o brinquedo conforme ID</response>
         /// <response code="404">Retorna quando não tiver encontrado.</response>
         [HttpGet("{id}")]
-        public ActionResult<Brinquedo> GetBrinquedo(int id)
+        public ActionResult<Brinquedo> GetBrinquedo(Guid id)
         {
             var brinquedo = _brinquedoRepository.GetById(id);
             if (brinquedo == null)
@@ -88,7 +102,7 @@ namespace TrocaToy.Controllers.v1
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpPut("{id}")]
         [Authorize]
-        public ActionResult<Brinquedo> PutBrinquedo(int id, Brinquedo brinquedo)
+        public ActionResult<Brinquedo> PutBrinquedo(Guid id, Brinquedo brinquedo)
         {
             if (id != brinquedo.Id)
             {
@@ -142,6 +156,7 @@ namespace TrocaToy.Controllers.v1
             {
                 brinquedo = JsonService<Brinquedo>.GetObject(json);
                 ModelState.Clear();
+                _brinquedoRepository.GetAll().OrderBy(x => x.Id);
                 if (this.TryValidateModel(brinquedo))
                 {
                     _brinquedoRepository.Insert(brinquedo);
@@ -183,7 +198,7 @@ namespace TrocaToy.Controllers.v1
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpDelete("{id}")]
         [Authorize]
-        public ActionResult<Usuario> DeleteBrinquedo(int id)
+        public ActionResult<Usuario> DeleteBrinquedo(Guid id)
         {
             if (!BrinquedoExists(id))
             {
@@ -203,7 +218,7 @@ namespace TrocaToy.Controllers.v1
             }
         }
 
-        private bool BrinquedoExists(int id)
+        private bool BrinquedoExists(Guid id)
         {
             return _brinquedoRepository.GetById(id) != null;
         }

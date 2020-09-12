@@ -1,8 +1,10 @@
 using Infrastructure;
+using Infrastructure.Services;
 using Infrastructure.UnitWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -17,6 +19,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using TrocaToy.Business;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 using TrocaToy.Utils;
@@ -73,23 +76,40 @@ namespace TrocaToy
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
-                OpenApiSecurityScheme securityDefinition = new OpenApiSecurityScheme()
-                {
-                    Name = "Bearer",
-                    BearerFormat = "JWT",
-                    Scheme = "bearer",
-                    Description = "Specify the authorization token.",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                };
 
-                options.AddSecurityDefinition("jwt_auth", securityDefinition);
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] {}
+
+                    }
+                });
             });
+
+
+
             _ = services.AddVersionedApiExplorer(o =>
-              {
-                  o.GroupNameFormat = "'v'VVV";
-                  o.SubstituteApiVersionInUrl = true;
-              });
+            {
+                o.GroupNameFormat = "'v'VVV";
+                o.SubstituteApiVersionInUrl = true;
+            });
 
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
@@ -111,17 +131,39 @@ namespace TrocaToy
                 };
             });
 
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddControllersWithViews();
-            services.AddDbContext<DbContext, TrocaToyContext>();
-            services.AddTransient<IUsuarioRepository, UsuarioRepository>();
-            services.AddTransient<IBrinquedoRepository, BrinquedoRepository>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            AddInjectionDependency(services);
+            services.AddHttpContextAccessor();
+            services.AddMvc(options => options.ModelValidatorProviders.Clear());
+            services.AddSingleton<IUriService>(o =>
+            {
+                var accessor = o.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                return new UriService(uri);
+            });
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+        }
+
+        private static void AddInjectionDependency(IServiceCollection services)
+        {
+            services.AddDbContext<DbContext, TrocaToyContext>();
+            services.AddTransient<IUsuarioRepository, UsuarioRepository>();
+            services.AddTransient<IBrinquedoRepository, BrinquedoRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IEstadoRepository, EstadoRepository>();
+            services.AddTransient<ICidadeRepository, CidadeRepository>();
+            services.AddTransient<IUsuarioBusiness, UsuarioBusiness>();
+            services.AddTransient<ICidadeBusiness, CidadeBusiness>();
+            services.AddTransient<IEstadoBusiness, EstadoBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

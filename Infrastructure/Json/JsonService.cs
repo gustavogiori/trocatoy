@@ -23,7 +23,8 @@ namespace Infrastructure.Json
             {
                 DateFormatString = "yyyy-MM-dd",
                 DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
             };
             var json = JsonConvert.SerializeObject(objeto, settings);
             return json;

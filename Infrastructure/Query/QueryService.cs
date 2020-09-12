@@ -23,7 +23,7 @@ namespace Infrastructure.Query
             if (_propertyNames.Length > 1)
                 type = typeof(T).GetProperty(_propertyNames[0]).PropertyType.GetProperty(_propertyNames[1]).PropertyType;
             else
-                type = typeof(T).GetProperty(campo).PropertyType;
+                type = typeof(T).GetProperty(campo,BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).PropertyType;
             // cria Expression para o campo
             MemberExpression propertyExpression = Expression.PropertyOrField(param, campo);
             // cria Expression para o valor

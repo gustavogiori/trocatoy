@@ -39,17 +39,17 @@ namespace TrocaToy.Models
             {
                 entity.Property(e => e.DataAnuncio).HasColumnType("datetime");
 
-                entity.HasOne(d => d.IdBrinquedoNavigation)
-                    .WithMany(p => p.Anuncio)
-                    .HasForeignKey(d => d.IdBrinquedo)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Anuncio_Brinquedo");
+                //entity.HasOne(d => d.IdBrinquedoNavigation)
+                //    .WithMany(p => p.Anuncio)
+                //    .HasForeignKey(d => d.IdBrinquedo)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Anuncio_Brinquedo");
 
-                entity.HasOne(d => d.IdEnderecoEntregaNavigation)
-                    .WithMany(p => p.Anuncio)
-                    .HasForeignKey(d => d.IdEnderecoEntrega)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Anuncio_Endereco");
+                //entity.HasOne(d => d.IdEnderecoEntregaNavigation)
+                //    .WithMany(p => p.Anuncio)
+                //    .HasForeignKey(d => d.IdEnderecoEntrega)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_Anuncio_Endereco");
             });
 
             modelBuilder.Entity<Brinquedo>(entity =>
@@ -63,7 +63,7 @@ namespace TrocaToy.Models
 
             modelBuilder.Entity<Cidade>(entity =>
             {
-                entity.HasKey(e => e.Codigo);
+                entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Codigo).HasMaxLength(6);
             });
@@ -74,39 +74,21 @@ namespace TrocaToy.Models
                     .HasColumnName("CEP")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.CodCidade).HasMaxLength(6);
+                entity.Property(e => e.IdCidade).HasMaxLength(36);
 
-                entity.Property(e => e.CodEstado).HasMaxLength(2);
+                entity.Property(e => e.IdEstado).HasMaxLength(36);
 
-                entity.HasOne(d => d.CodCidadeNavigation)
-                    .WithMany(p => p.Endereco)
-                    .HasForeignKey(d => d.CodCidade)
-                    .HasConstraintName("FK_Endereco_Cidade");
-
-                entity.HasOne(d => d.CodEstadoNavigation)
-                    .WithMany(p => p.Endereco)
-                    .HasForeignKey(d => d.CodEstado)
-                    .HasConstraintName("FK_Endereco_Estado");
             });
 
             modelBuilder.Entity<Estado>(entity =>
             {
-                entity.HasKey(e => e.Codigo);
+                entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Codigo).HasMaxLength(2);
             });
 
             modelBuilder.Entity<ItensProposta>(entity =>
             {
-                entity.HasOne(d => d.IdBrinquedoNavigation)
-                    .WithMany(p => p.ItensProposta)
-                    .HasForeignKey(d => d.IdBrinquedo)
-                    .HasConstraintName("FK_Table_2_Brinquedo");
-
-                entity.HasOne(d => d.IdPropostaNavigation)
-                    .WithMany(p => p.ItensProposta)
-                    .HasForeignKey(d => d.IdProposta)
-                    .HasConstraintName("FK_Table_2_Proposta");
             });
 
 

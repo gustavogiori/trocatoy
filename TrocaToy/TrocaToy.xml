@@ -4,10 +4,73 @@
         <name>TrocaToy</name>
     </assembly>
     <members>
+        <member name="T:TrocaToy.Business.CidadeBusiness">
+            <summary>
+            Camada de regra de negócio cidade
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Business.CidadeBusiness.#ctor(TrocaToy.Repository.ICidadeRepository)">
+            <summary>
+            UsuarioBusiness
+            </summary>
+            <param name="repository"></param>
+        </member>
+        <member name="T:TrocaToy.Business.EstadoBusiness">
+            <summary>
+            EstadoBusiness
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Business.EstadoBusiness.#ctor(TrocaToy.Repository.IEstadoRepository)">
+            <summary>
+            Construtor
+            </summary>
+            <param name="estadoRepository"></param>
+        </member>
+        <member name="T:TrocaToy.Business.ICidadeBusiness">
+            <summary>
+            ICidadeBusiness
+            </summary>
+        </member>
+        <member name="T:TrocaToy.Business.IEstadoBusiness">
+            <summary>
+            Estado business
+            </summary>
+        </member>
+        <member name="T:TrocaToy.Business.IUsuarioBusiness">
+            <summary>
+            IUsuarioBusiness
+            </summary>
+        </member>
+        <member name="T:TrocaToy.Business.UsuarioBusiness">
+            <summary>
+            UsuarioBusiness
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Business.UsuarioBusiness.#ctor(TrocaToy.Repository.IUsuarioRepository)">
+            <summary>
+            UsuarioBusiness
+            </summary>
+            <param name="repository"></param>
+        </member>
+        <member name="M:TrocaToy.Business.UsuarioBusiness.Insert(TrocaToy.Models.Usuario)">
+            <summary>
+            Inserindo dados
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
         <member name="T:TrocaToy.Controllers.v1.BaseController">
             <summary>
             Controle base
             </summary>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BaseController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService)">
+            <summary>
+            Construtor
+            </summary>
+            <param name="context"></param>
+            <param name="unitOfWork"></param>
+            <param name="uriService"></param>
         </member>
         <member name="F:TrocaToy.Controllers.v1.BaseController._context">
             <summary>
@@ -19,20 +82,26 @@
             Unidade de trabalho
             </summary>
         </member>
+        <member name="F:TrocaToy.Controllers.v1.BaseController._uriService">
+            <summary>
+            Uri Service
+            </summary>
+        </member>
         <member name="T:TrocaToy.Controllers.v1.BrinquedosController">
             <summary>
             Controler brinquedos
             </summary>
         </member>
-        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,TrocaToy.Repository.IBrinquedoRepository)">
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService,TrocaToy.Repository.IBrinquedoRepository)">
             <summary>
             Constructor
             </summary>
             <param name="context"></param>
             <param name="unitOfWork"></param>
+            <param name="uriService"></param>
             <param name="brinquedoRepository"></param>
         </member>
-        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo">
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo(Infrastructure.Filter.PaginationFilter)">
             <summary>
             Retornar todos os brinquedos
             </summary>
@@ -40,7 +109,15 @@
             <response code="200">Retorna lista com todos brinquedos</response>
             <response code="401">Retorna quando não estiver autenticado.</response>
         </member>
-        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedoCriteria(System.String,System.String)">
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedoCriteria(System.String,System.String,Infrastructure.Filter.PaginationFilter)">
+            <summary>
+            Retorna brinquedo conforme Filtro utilizando um campo e o valor desejado
+            </summary>
+            <returns>Brinquedo conforme filtro</returns>
+            <response code="200">Retorna o brinquedo conforme ID</response>
+            <response code="404">Retorna quando não tiver encontrado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo(System.Guid)">
             <summary>
             Retorna brinquedo conforme ID
             </summary>
@@ -48,15 +125,7 @@
             <response code="200">Retorna o brinquedo conforme ID</response>
             <response code="404">Retorna quando não tiver encontrado.</response>
         </member>
-        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo(System.Int32)">
-            <summary>
-            Retorna brinquedo conforme ID
-            </summary>
-            <returns>Brinquedo conforme id</returns>
-            <response code="200">Retorna o brinquedo conforme ID</response>
-            <response code="404">Retorna quando não tiver encontrado.</response>
-        </member>
-        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.PutBrinquedo(System.Int32,TrocaToy.Models.Brinquedo)">
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.PutBrinquedo(System.Guid,TrocaToy.Models.Brinquedo)">
             Put api/v1/brinquedos/id
             <summary>
             Altera dados do brinquedo
@@ -76,6 +145,141 @@
             <response code="201">Retorna se o brinquedo foi criado com sucesso</response>
             <response code="400">Retorna se houve algum erro na criação do usuário.</response>
         </member>
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.DeleteBrinquedo(System.Guid)">
+            Delete api/v1/brinquedos/id
+            <summary>
+            Deleta dados do brinquedo
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna se o brinquedo foi deletado com sucesso.</response>
+            <response code="409">Retorna se houve algum erro na deleção </response>
+            <response code="404">Retorna se o brinquedo não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="T:TrocaToy.Controllers.v1.CidadesController">
+            <summary>
+            Controle estado
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.CidadesController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService,TrocaToy.Business.ICidadeBusiness)">
+            <summary>
+            EstadosController
+            </summary>
+            <param name="context"></param>
+            <param name="unitOfWork"></param>
+            <param name="uriService"></param>
+            <param name="cidadeRepository"></param>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.CidadesController.GetCidade">
+            <summary>
+            Retornar todas as cidades
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna lista com todos cidades</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.CidadesController.GetCidade(System.Guid)">
+            Get api/v1/usuarios/id
+            <summary>
+            Retorna cidaded conforme ID
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna o cidade conforme ID</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.CidadesController.PutCidade(System.Guid,TrocaToy.Models.Cidade)">
+            Put api/v1/usuarios/id
+            <summary>
+            Altera dados do cidade
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="204">Retorna se o cidade foi alterado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na alteração do cidade.</response>
+            <response code="404">Retorna se o cidade não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.CidadesController.PostCidade(TrocaToy.Models.Cidade)">
+            Put api/v1/cidades/id
+            <summary>
+            Altera dados do cidade
+            </summary>
+            <returns>Lista de cidade</returns>
+            <response code="201">Retorna se a cidade foi criado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na criação da cidade.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.CidadesController.DeleteCidade(System.Guid)">
+            Delete api/v1/usuarios/id
+            <summary>
+            Altera dados da cidade
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna se a cidade foi deletado com sucesso.</response>
+            <response code="409">Retorna se houve algum erro na deleção da cidade.</response>
+            <response code="404">Retorna se a cidade não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="T:TrocaToy.Controllers.v1.EstadosController">
+            <summary>
+            Controle estado
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.EstadosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService,TrocaToy.Business.IEstadoBusiness)">
+            <summary>
+            EstadosController
+            </summary>
+            <param name="context"></param>
+            <param name="unitOfWork"></param>
+            <param name="uriService"></param>
+            <param name="estadoRepository"></param>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.EstadosController.GetEstado">
+            <summary>
+            Retornar todos os estados
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna lista com todos estados</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.EstadosController.GetEstado(System.Guid)">
+            Get api/v1/usuarios/id
+            <summary>
+            Retorna estado conforme ID
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna o estado conforme ID</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.EstadosController.PutEstado(System.Guid,TrocaToy.Models.Estado)">
+            Put api/v1/usuarios/id
+            <summary>
+            Altera dados do estado
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="204">Retorna se o estado foi alterado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na alteração do estado.</response>
+            <response code="404">Retorna se o estado não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.EstadosController.PostEstado(TrocaToy.Models.Estado)">
+            Put api/v1/usuarios/id
+            <summary>
+            Altera dados do estado
+            </summary>
+            <returns>Lista de estado</returns>
+            <response code="201">Retorna se o usuário foi criado com sucesso</response>
+            <response code="400">Retorna se houve algum erro na criação do estado.</response>
+        </member>
+        <member name="M:TrocaToy.Controllers.v1.EstadosController.DeleteEstado(System.Guid)">
+            Delete api/v1/usuarios/id
+            <summary>
+            deleta dados do estado
+            </summary>
+            <returns>Lista de usuários</returns>
+            <response code="200">Retorna se o usuário foi deletado com sucesso.</response>
+            <response code="409">Retorna se houve algum erro na deleção do usuário.</response>
+            <response code="404">Retorna se o usuário não foi encontrado.</response>
+            <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
         <member name="M:TrocaToy.Controllers.v1.LoginController.Authenticate(Infrastructure.Models.UsuarioLogin)">
             <summary>
             Realiza login na aplicação
@@ -90,13 +294,14 @@
             Controle usuário
             </summary>
         </member>
-        <member name="M:TrocaToy.Controllers.UsuariosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,TrocaToy.Repository.IUsuarioRepository)">
+        <member name="M:TrocaToy.Controllers.UsuariosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService,TrocaToy.Business.IUsuarioBusiness)">
             <summary>
             Constructor
             </summary>
             <param name="context"></param>
-            <param name="usuarioRepository"></param>
+            <param name="usuarioBusiness"></param>
             <param name="unitOfWork"></param>
+            <param name="uriService"></param>
         </member>
         <member name="M:TrocaToy.Controllers.UsuariosController.GetUsuario">
             <summary>
@@ -106,7 +311,7 @@
             <response code="200">Retorna lista com todos usuários</response>
             <response code="401">Retorna quando não estiver autenticado.</response>
         </member>
-        <member name="M:TrocaToy.Controllers.UsuariosController.GetUsuario(System.Int32)">
+        <member name="M:TrocaToy.Controllers.UsuariosController.GetUsuario(System.Guid)">
             Get api/v1/usuarios/id
             <summary>
             Retorna usuário conforme ID
@@ -115,7 +320,7 @@
             <response code="200">Retorna o usuário conforme ID</response>
             <response code="401">Retorna quando não estiver autenticado.</response>
         </member>
-        <member name="M:TrocaToy.Controllers.UsuariosController.PutUsuario(System.Int32,TrocaToy.Models.Usuario)">
+        <member name="M:TrocaToy.Controllers.UsuariosController.PutUsuario(System.Guid,TrocaToy.Models.Usuario)">
             Put api/v1/usuarios/id
             <summary>
             Altera dados do usuário
@@ -135,7 +340,7 @@
             <response code="201">Retorna se o usuário foi criado com sucesso</response>
             <response code="400">Retorna se houve algum erro na criação do usuário.</response>
         </member>
-        <member name="M:TrocaToy.Controllers.UsuariosController.DeleteUsuario(System.Int32)">
+        <member name="M:TrocaToy.Controllers.UsuariosController.DeleteUsuario(System.Guid)">
             Delete api/v1/usuarios/id
             <summary>
             Altera dados do usuário
@@ -157,6 +362,33 @@
             </summary>
             <param name="context">Context banco de dados</param>
         </member>
+        <member name="T:TrocaToy.Repository.CidadeRepository">
+            <summary>
+            CidadeRepository
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Repository.CidadeRepository.#ctor(Microsoft.EntityFrameworkCore.DbContext)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:TrocaToy.Repository.EstadoRepository">
+            <summary>
+            EstadoRepository
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Repository.EstadoRepository.#ctor(Microsoft.EntityFrameworkCore.DbContext)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:TrocaToy.Repository.ICidadeRepository">
+            <summary>
+            ICidadeRepository
+            </summary>
+        </member>
         <member name="T:TrocaToy.Repository.IUsuarioRepository">
             <summary>
             Interface repositório usuário
@@ -172,12 +404,6 @@
             Constructor
             </summary>
             <param name="context"></param>
-        </member>
-        <member name="M:TrocaToy.Repository.UsuarioRepository.Insert(TrocaToy.Models.Usuario)">
-            <summary>
-            Insere novo usuário
-            </summary>
-            <param name="obj"></param>
         </member>
     </members>
 </doc>

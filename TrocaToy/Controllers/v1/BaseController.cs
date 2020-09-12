@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Services;
 using Infrastructure.UnitWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,18 @@ namespace TrocaToy.Controllers.v1
     [ApiController]
     public class BaseController : ControllerBase
     {
-        public BaseController(DbContext context, IUnitOfWork unitOfWork)
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="unitOfWork"></param>
+        /// <param name="uriService"></param>
+        public BaseController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService)
         {
             _context = context;
             _unitOfWork = unitOfWork;
+            _uriService = uriService;
+
         }
         /// <summary>
         /// Base de dados
@@ -28,5 +37,10 @@ namespace TrocaToy.Controllers.v1
         /// Unidade de trabalho
         /// </summary>
         protected IUnitOfWork _unitOfWork;
+
+        /// <summary>
+        /// Uri Service
+        /// </summary>
+        protected IUriService _uriService;
     }
 }

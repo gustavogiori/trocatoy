@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Models;
 using Infrastructure.Security;
+using Infrastructure.Wrappers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -36,9 +37,13 @@ namespace TrocaToy.Controllers.v1
         [Route("login")]
         public ActionResult<dynamic> Authenticate(UsuarioLogin model)
         {
-            var userModel = model;
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Senha))
+            {
+                return BadRequest(new Response<UsuarioLogin>() { Succeeded = false, Message = "É preciso preencher usuário e senha!" });
+            }
+            var teste = Guid.NewGuid();
             // Recupera o usuário
-            var user = _usuarioRepository.GetByCriteria(x => x.Email == userModel.Email && x.Senha == MD5Operation.GerarHashMd5(userModel.Senha)).FirstOrDefault();
+            var user = _usuarioRepository.GetByCriteria(x => x.Email == model.Email && x.Senha == MD5Operation.GerarHashMd5(model.Senha)).FirstOrDefault();
 
             // Verifica se o usuário existe
             if (user == null)

@@ -9,145 +9,136 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using TrocaToy.Business;
-using TrocaToy.Controllers.v1;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 
-namespace TrocaToy.Controllers
+namespace TrocaToy.Controllers.v1
 {
     /// <summary>
-    /// Controle usuário
+    /// Controle estado
     /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-
-    public class UsuariosController : BaseController
+    public class EstadosController : BaseController
     {
-        IUsuarioBusiness _usuarioBusiness;
+
+        private readonly IEstadoBusiness _estadoBusiness;
         /// <summary>
-        /// Constructor
+        /// EstadosController
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="usuarioBusiness"></param>
         /// <param name="unitOfWork"></param>
         /// <param name="uriService"></param>
-        public UsuariosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IUsuarioBusiness usuarioBusiness) : base(context, unitOfWork, uriService)
+        /// <param name="estadoRepository"></param>
+        public EstadosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IEstadoBusiness estadoRepository) : base(context, unitOfWork, uriService)
         {
-            _usuarioBusiness = usuarioBusiness;
+            this._estadoBusiness = estadoRepository;
         }
-
         // Get api/v1/usuarios
         /// <summary>
-        /// Retornar todos os usuários
+        /// Retornar todos os estados
         /// </summary>
         /// <returns>Lista de usuários</returns>
-        /// <response code="200">Retorna lista com todos usuários</response>
+        /// <response code="200">Retorna lista com todos estados</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
         [Authorize]
-        public List<Usuario> GetUsuario()
+        public List<Estado> GetEstado()
         {
-            return JsonService<List<Usuario>>.GetObject(_usuarioBusiness.GetAll().ToList());
+            return JsonService<List<Estado>>.GetObject(_estadoBusiness.GetAll().ToList());
         }
 
         /// Get api/v1/usuarios/id
         /// <summary>
-        /// Retorna usuário conforme ID
+        /// Retorna estado conforme ID
         /// </summary>
         /// <returns>Lista de usuários</returns>
-        /// <response code="200">Retorna o usuário conforme ID</response>
+        /// <response code="200">Retorna o estado conforme ID</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet("{id}")]
         [Authorize]
-        public ActionResult<Usuario> GetUsuario(Guid id)
+        public ActionResult<Estado> GetEstado(Guid id)
         {
-            var usuario = _usuarioBusiness.GetById(id);
-            if (usuario == null)
+            var estado = _estadoBusiness.GetById(id);
+            if (estado == null)
                 return NotFound();
 
-            return Ok(usuario);
+            return Ok(estado);
         }
-        private Usuario GetUsuarioComValorDeDadosNaoEditaveis(Usuario usuarioBanco, Usuario usuarioRequest)
-        {
-            usuarioRequest.Regra = usuarioBanco.Regra;
-            return usuarioRequest;
-        }
+
         /// Put api/v1/usuarios/id
         /// <summary>
-        /// Altera dados do usuário
+        /// Altera dados do estado
         /// </summary>
         /// <returns>Lista de usuários</returns>
-        /// <response code="204">Retorna se o usuário foi alterado com sucesso</response>
-        /// <response code="400">Retorna se houve algum erro na alteração do usuário.</response>
-        /// <response code="404">Retorna se o usuário não foi encontrado.</response>
+        /// <response code="204">Retorna se o estado foi alterado com sucesso</response>
+        /// <response code="400">Retorna se houve algum erro na alteração do estado.</response>
+        /// <response code="404">Retorna se o estado não foi encontrado.</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
 
         [HttpPut("{id}")]
         [Authorize]
-        public ActionResult<Usuario> PutUsuario(Guid id, Usuario usuario)
+        public ActionResult<Estado> PutEstado(Guid id, Estado estado)
         {
-            if (id != usuario.Id)
+            if (id != estado.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-
-                usuario = GetUsuarioComValorDeDadosNaoEditaveis(usuario, _usuarioBusiness.GetById(id));
-                var result = _usuarioBusiness.Update(usuario);
-                usuario = result.Item1;
+                var result = _estadoBusiness.Update(estado);
+                estado = result.Item1;
 
                 if (result.Item2.IsValid)
                 {
                     _unitOfWork.Commit();
 
-                    return Ok(usuario);
+                    return Ok(estado);
                 }
 
                 _unitOfWork.Rollback();
                 return BadRequest(result.Item2.ErrorMessage);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 _unitOfWork.Rollback();
 
-                if (!UsuarioExists(id))
+                if (!EstadoExists(id))
                 {
                     return NotFound();
                 }
                 else
                 {
 
-                    throw;
+                    throw ex;
                 }
             }
         }
 
         /// Put api/v1/usuarios/id
         /// <summary>
-        /// Altera dados do usuário
+        /// Altera dados do estado
         /// </summary>
-        /// <returns>Lista de usuários</returns>
+        /// <returns>Lista de estado</returns>
         /// <response code="201">Retorna se o usuário foi criado com sucesso</response>
-        /// <response code="400">Retorna se houve algum erro na criação do usuário.</response>
+        /// <response code="400">Retorna se houve algum erro na criação do estado.</response>
         [HttpPost]
-        public ActionResult<Usuario> PostUsuario([FromBody] Usuario json)
+        public ActionResult<Estado> PostEstado([FromBody] Estado json)
         {
-            Usuario usuario = new Usuario();
+            Estado estado = new Estado();
             try
             {
-                usuario = JsonService<Usuario>.GetObject(json);
+                estado = JsonService<Estado>.GetObject(json);
+                var result = _estadoBusiness.Insert(estado);
 
-                var result = _usuarioBusiness.Insert(usuario);
-                usuario = result.Item1;
+                estado = result.Item1;
                 if (result.Item2.IsValid)
                 {
                     _unitOfWork.Commit();
-                    return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
+                    return CreatedAtAction("GetEstado", new { id = estado.Id }, estado);
                 }
 
                 _unitOfWork.Rollback();
@@ -157,7 +148,7 @@ namespace TrocaToy.Controllers
             {
                 _unitOfWork.Rollback();
 
-                if (UsuarioExists(usuario.Id))
+                if (EstadoExists(estado.Id))
                 {
                     return Conflict(ex.Message);
                 }
@@ -175,7 +166,7 @@ namespace TrocaToy.Controllers
 
         /// Delete api/v1/usuarios/id
         /// <summary>
-        /// Altera dados do usuário
+        /// deleta dados do estado
         /// </summary>
         /// <returns>Lista de usuários</returns>
         /// <response code="200">Retorna se o usuário foi deletado com sucesso.</response>
@@ -184,9 +175,9 @@ namespace TrocaToy.Controllers
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpDelete("{id}")]
         [Authorize]
-        public ActionResult<Usuario> DeleteUsuario(Guid id)
+        public ActionResult<Usuario> DeleteEstado(Guid id)
         {
-            var usuarioExiste = UsuarioExists(id);
+            var usuarioExiste = EstadoExists(id);
 
             if (!usuarioExiste)
             {
@@ -195,7 +186,7 @@ namespace TrocaToy.Controllers
 
             try
             {
-                _usuarioBusiness.Delete(id);
+                _estadoBusiness.Delete(id);
                 _unitOfWork.Commit();
                 return Ok(id);
             }
@@ -206,9 +197,9 @@ namespace TrocaToy.Controllers
             }
         }
 
-        private bool UsuarioExists(Guid id)
+        private bool EstadoExists(Guid id)
         {
-            return _usuarioBusiness.GetById(id) != null;
+            return _estadoBusiness.GetById(id) != null;
         }
     }
 }

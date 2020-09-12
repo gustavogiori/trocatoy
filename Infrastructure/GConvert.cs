@@ -6,6 +6,13 @@ namespace Infrastructure
 {
     public static class GConvert
     {
+        public static bool IsGuidEmpty(Guid? guid)
+        {
+            if (guid == null || guid == Guid.Empty)
+                return true;
+
+            return false;
+        }
         public static int ToInt32(string? value)
         {
             if (string.IsNullOrEmpty(value))
