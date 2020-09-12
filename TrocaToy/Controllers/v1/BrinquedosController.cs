@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TrocaToy.Business;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 
@@ -27,17 +28,17 @@ namespace TrocaToy.Controllers.v1
 
     public class BrinquedosController : BaseController
     {
-        IBrinquedoRepository _brinquedoRepository;
+        IBrinquedoBusiness _brinquedoBusiness;
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
         /// <param name="unitOfWork"></param>
         /// <param name="uriService"></param>
-        /// <param name="brinquedoRepository"></param>
-        public BrinquedosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IBrinquedoRepository brinquedoRepository) : base(context, unitOfWork, uriService)
+        /// <param name="brinquedoBusiness"></param>
+        public BrinquedosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IBrinquedoBusiness brinquedoBusiness) : base(context, unitOfWork, uriService)
         {
-            _brinquedoRepository = brinquedoRepository;
+            _brinquedoBusiness = brinquedoBusiness;
         }
 
         // GET: api/Brinquedos
@@ -52,7 +53,7 @@ namespace TrocaToy.Controllers.v1
         {
             var route = Request.Path.Value;
             int countPages = 0;
-            var pagedData = _brinquedoRepository.GetAll(filter, out countPages).ToList();
+            var pagedData = _brinquedoBusiness.GetAll(filter, out countPages).ToList();
             PagedResponse<List<Brinquedo>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
 
             return Ok(pagedReponse);
@@ -69,7 +70,7 @@ namespace TrocaToy.Controllers.v1
         {
             var route = Request.Path.Value;
             int countPages = 0;
-            var pagedData = _brinquedoRepository.GetByCriteria(QueryService<Brinquedo>.GetCriteria(campo, valor), filter, out countPages).ToList();
+            var pagedData = _brinquedoBusiness.GetByCriteria(QueryService<Brinquedo>.GetCriteria(campo, valor), filter, out countPages).ToList();
             PagedResponse<List<Brinquedo>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
 
             return Ok(pagedReponse);
@@ -84,7 +85,7 @@ namespace TrocaToy.Controllers.v1
         [HttpGet("{id}")]
         public ActionResult<Brinquedo> GetBrinquedo(Guid id)
         {
-            var brinquedo = _brinquedoRepository.GetById(id);
+            var brinquedo = _brinquedoBusiness.GetById(id);
             if (brinquedo == null)
                 return NotFound();
 
@@ -111,18 +112,18 @@ namespace TrocaToy.Controllers.v1
 
             try
             {
-                ModelState.Clear();
-                if (this.TryValidateModel(brinquedo))
+                var result = _brinquedoBusiness.Update(brinquedo);
+                brinquedo = result.Item1;
+
+                if (result.Item2.IsValid)
                 {
-                    brinquedo = _brinquedoRepository.GetById(brinquedo.Id);
-                    _brinquedoRepository.Update(brinquedo);
                     _unitOfWork.Commit();
 
-                    return NoContent();
+                    return Ok(brinquedo);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(ModelState);
+                return BadRequest(result.Item2.ErrorMessage);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -155,17 +156,18 @@ namespace TrocaToy.Controllers.v1
             try
             {
                 brinquedo = JsonService<Brinquedo>.GetObject(json);
-                ModelState.Clear();
-                _brinquedoRepository.GetAll().OrderBy(x => x.Id);
-                if (this.TryValidateModel(brinquedo))
+
+                var result = _brinquedoBusiness.Insert(brinquedo);
+                brinquedo = result.Item1;
+
+                if (result.Item2.IsValid)
                 {
-                    _brinquedoRepository.Insert(brinquedo);
                     _unitOfWork.Commit();
                     return CreatedAtAction("GetBrinquedo", new { id = brinquedo.Id }, brinquedo);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(ModelState);
+                return BadRequest(result.Item2);
             }
             catch (DbUpdateException ex)
             {
@@ -207,7 +209,7 @@ namespace TrocaToy.Controllers.v1
 
             try
             {
-                _brinquedoRepository.Delete(id);
+                _brinquedoBusiness.Delete(id);
                 _unitOfWork.Commit();
                 return Ok(id);
             }
@@ -220,7 +222,7 @@ namespace TrocaToy.Controllers.v1
 
         private bool BrinquedoExists(Guid id)
         {
-            return _brinquedoRepository.GetById(id) != null;
+            return _brinquedoBusiness.GetById(id) != null;
         }
     }
 }

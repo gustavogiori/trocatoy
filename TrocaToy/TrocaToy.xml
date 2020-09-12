@@ -4,6 +4,17 @@
         <name>TrocaToy</name>
     </assembly>
     <members>
+        <member name="T:TrocaToy.Business.Interfaces.BrinquedoBusiness">
+            <summary>
+            Camada de negócio
+            </summary>
+        </member>
+        <member name="M:TrocaToy.Business.Interfaces.BrinquedoBusiness.#ctor(TrocaToy.Repository.IBrinquedoRepository)">
+            <summary>
+            Construção
+            </summary>
+            <param name="brinquedoRepository"></param>
+        </member>
         <member name="T:TrocaToy.Business.CidadeBusiness">
             <summary>
             Camada de regra de negócio cidade
@@ -25,6 +36,11 @@
             Construtor
             </summary>
             <param name="estadoRepository"></param>
+        </member>
+        <member name="T:TrocaToy.Business.IBrinquedoBusiness">
+            <summary>
+            IBrinquedoBusiness
+            </summary>
         </member>
         <member name="T:TrocaToy.Business.ICidadeBusiness">
             <summary>
@@ -92,14 +108,14 @@
             Controler brinquedos
             </summary>
         </member>
-        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService,TrocaToy.Repository.IBrinquedoRepository)">
+        <member name="M:TrocaToy.Controllers.v1.BrinquedosController.#ctor(Microsoft.EntityFrameworkCore.DbContext,Infrastructure.UnitWork.IUnitOfWork,Infrastructure.Services.IUriService,TrocaToy.Business.IBrinquedoBusiness)">
             <summary>
             Constructor
             </summary>
             <param name="context"></param>
             <param name="unitOfWork"></param>
             <param name="uriService"></param>
-            <param name="brinquedoRepository"></param>
+            <param name="brinquedoBusiness"></param>
         </member>
         <member name="M:TrocaToy.Controllers.v1.BrinquedosController.GetBrinquedo(Infrastructure.Filter.PaginationFilter)">
             <summary>

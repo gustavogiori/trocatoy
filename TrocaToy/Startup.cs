@@ -164,6 +164,7 @@ namespace TrocaToy
             services.AddTransient<IUsuarioBusiness, UsuarioBusiness>();
             services.AddTransient<ICidadeBusiness, CidadeBusiness>();
             services.AddTransient<IEstadoBusiness, EstadoBusiness>();
+            services.AddTransient<IBrinquedoBusiness, BrinquedoBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
