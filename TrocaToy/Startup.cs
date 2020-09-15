@@ -22,8 +22,10 @@ using System.Text;
 using TrocaToy.Business;
 using TrocaToy.Models;
 using TrocaToy.Repository;
-using TrocaToy.Utils;
-using TrocaToy.Utils.General;
+using GraphQL;
+using TrocaToy.GraphQL;
+using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
 
 namespace TrocaToy
 {
@@ -39,6 +41,16 @@ namespace TrocaToy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
+            services.AddScoped<BrinquedoSchema>();
+            services
+                .AddGraphQL(o => { o.ExposeExceptions = true; })
+                .AddGraphTypes(ServiceLifetime.Scoped);
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
             services.AddApiVersioning(options =>
             {
                 options.UseApiBehavior = false;
@@ -146,6 +158,7 @@ namespace TrocaToy
                 var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
                 return new UriService(uri);
             });
+     
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -170,6 +183,9 @@ namespace TrocaToy
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseGraphQL<BrinquedoSchema>();
+            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -203,6 +219,7 @@ namespace TrocaToy
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
+          
 
             app.UseSpa(spa =>
             {

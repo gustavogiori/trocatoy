@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GraphQL.Client;
+using GraphQL.Common.Request;
 using Infrastructure.Filter;
 using Infrastructure.Helpers;
 using Infrastructure.Json;
@@ -40,7 +42,22 @@ namespace TrocaToy.Controllers.v1
         {
             _brinquedoBusiness = brinquedoBusiness;
         }
-
+        [HttpGet, Route("GetBrinquedoGraphQL")]
+        public async Task<List<Brinquedo>> GetGraphQL(string query)
+        {
+            using (GraphQLClient graphQLClient = new GraphQLClient("https://localhost:44351/graphql"))
+            {
+                var queryRequest = new GraphQLRequest
+                {
+                    Query = @"   
+                        { brinquedos   
+                            { nome marca }   
+                        }",
+                };
+                var response = await graphQLClient.PostAsync(queryRequest);
+                return response.GetDataFieldAs<List<Brinquedo>>("brinquedos");
+            }
+        }
         // GET: api/Brinquedos
         /// <summary>
         /// Retornar todos os brinquedos

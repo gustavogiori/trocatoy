@@ -6,8 +6,8 @@ namespace TrocaToy.Models
 {
     public partial class Anuncio : EntityBase
     {
-        public int IdBrinquedo { get; set; }
-        public int IdEnderecoEntrega { get; set; }
+        public Guid IdBrinquedo { get; set; }
+        public Guid IdEnderecoEntrega { get; set; }
         public int TipoDisponibilidade { get; set; }
         public string TelefoneContato { get; set; }
         public DateTime? DataAnuncio { get; set; }

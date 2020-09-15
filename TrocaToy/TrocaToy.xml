@@ -4,12 +4,12 @@
         <name>TrocaToy</name>
     </assembly>
     <members>
-        <member name="T:TrocaToy.Business.Interfaces.BrinquedoBusiness">
+        <member name="T:TrocaToy.Business.BrinquedoBusiness">
             <summary>
             Camada de negócio
             </summary>
         </member>
-        <member name="M:TrocaToy.Business.Interfaces.BrinquedoBusiness.#ctor(TrocaToy.Repository.IBrinquedoRepository)">
+        <member name="M:TrocaToy.Business.BrinquedoBusiness.#ctor(TrocaToy.Repository.IBrinquedoRepository)">
             <summary>
             Construção
             </summary>
@@ -366,6 +366,38 @@
             <response code="409">Retorna se houve algum erro na deleção do usuário.</response>
             <response code="404">Retorna se o usuário não foi encontrado.</response>
             <response code="401">Retorna quando não estiver autenticado.</response>
+        </member>
+        <member name="T:TrocaToy.GraphQL.BrinquedoQuery">
+            <summary>
+            Implementação GraphQL
+            </summary>
+        </member>
+        <member name="M:TrocaToy.GraphQL.BrinquedoQuery.#ctor(TrocaToy.Business.IBrinquedoBusiness)">
+            <summary>
+            BrinquedoQuery
+            </summary>
+            <param name="brinquedoBusiness"></param>
+        </member>
+        <member name="T:TrocaToy.GraphQL.BrinquedoSchema">
+            <summary>
+            Schema
+            </summary>
+        </member>
+        <member name="M:TrocaToy.GraphQL.BrinquedoSchema.#ctor(GraphQL.IDependencyResolver)">
+            <summary>
+            BrinquedoSchema
+            </summary>
+            <param name="resolver"></param>
+        </member>
+        <member name="T:TrocaToy.GraphQL.BrinquedoType">
+            <summary>
+            Tipo brinquedo
+            </summary>
+        </member>
+        <member name="M:TrocaToy.GraphQL.BrinquedoType.#ctor">
+            <summary>
+            Construtor
+            </summary>
         </member>
         <member name="T:TrocaToy.Repository.BrinquedoRepository">
             <summary>

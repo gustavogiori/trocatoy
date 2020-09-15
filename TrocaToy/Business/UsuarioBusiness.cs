@@ -3,10 +3,13 @@ using Infrastructure.Business;
 using Infrastructure.Security;
 using Infrastructure.Utils;
 using Infrastructure.Validation;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Dependencies;
+using System.Web.Mvc;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 
@@ -61,8 +64,17 @@ namespace TrocaToy.Business
 
             return base.Insert(obj);
         }
+        public override IEnumerable<Usuario> GetAll()
+        {
+            var teste = DependencyResolver.Current.GetService<IEstadoBusiness>();
+            var tt = teste.GetAll();
+            return base.GetAll();
+        }
 
-
+        public override void Delete(Guid id)
+        {
+            base.Delete(id);
+        }
 
         private void ValidaDados(Usuario obj, ValidationModel validationModel)
         {
