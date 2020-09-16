@@ -227,7 +227,7 @@ namespace TrocaToy
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
                 spa.Options.SourcePath = "ClientApp";
-
+                app.UseDeveloperExceptionPage();
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
