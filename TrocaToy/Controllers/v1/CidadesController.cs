@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Filter;
+using Infrastructure.Helpers;
 using Infrastructure.Json;
 using Infrastructure.Services;
 using Infrastructure.UnitWork;
+using Infrastructure.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,9 +48,14 @@ namespace TrocaToy.Controllers.v1
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
         [Authorize]
-        public List<Cidade> GetCidade()
+        public ActionResult<PagedResponse<List<Cidade>>> GetCidades([FromQuery] PaginationFilter filter)
         {
-            return JsonService<List<Cidade>>.GetObject(_cidadeBusiness.GetAll().ToList());
+            var route = Request.Path.Value;
+            int countPages = 0;
+            var pagedData = _cidadeBusiness.GetAll(filter, out countPages).ToList();
+            PagedResponse<List<Cidade>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
+
+            return Ok(pagedReponse);
         }
 
         /// Get api/v1/usuarios/id

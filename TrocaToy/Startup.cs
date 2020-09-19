@@ -119,7 +119,7 @@ namespace TrocaToy
             });
         }
 
-        private static void AddGraphQL(IServiceCollection services)
+        private void AddGraphQL(IServiceCollection services)
         {
             services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
             services.AddScoped<BrinquedoSchema>();
@@ -132,7 +132,7 @@ namespace TrocaToy
             });
         }
 
-        private static void AddSwagger(IServiceCollection services)
+        private void AddSwagger(IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
             {
@@ -155,7 +155,8 @@ namespace TrocaToy
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below." +
+                    "\r\n\r\nExample: \"Bearer 12345abcdef\"",
                 });
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
