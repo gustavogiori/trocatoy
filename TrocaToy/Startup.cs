@@ -158,7 +158,7 @@ namespace TrocaToy
                 var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
                 return new UriService(uri);
             });
-     
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -178,6 +178,8 @@ namespace TrocaToy
             services.AddTransient<ICidadeBusiness, CidadeBusiness>();
             services.AddTransient<IEstadoBusiness, EstadoBusiness>();
             services.AddTransient<IBrinquedoBusiness, BrinquedoBusiness>();
+            services.AddTransient<IAnuncioBusiness, AnuncioBusiness>();
+            services.AddTransient<IAnuncioRepository, AnuncioRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -219,7 +221,7 @@ namespace TrocaToy
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-          
+
 
             app.UseSpa(spa =>
             {
