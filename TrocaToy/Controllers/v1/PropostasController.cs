@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infrastructure.Filter;
 using Infrastructure.Helpers;
-using Infrastructure.Json;
 using Infrastructure.Services;
 using Infrastructure.UnitWork;
 using Infrastructure.Wrappers;
@@ -18,92 +17,90 @@ using TrocaToy.Models;
 namespace TrocaToy.Controllers.v1
 {
     /// <summary>
-    /// Controle Anuncios
+    /// Controler Proposta
     /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class AnunciosController : BaseController
+    public class PropostasController : BaseController
     {
-        IAnuncioBusiness _anuncioBusiness;
+        IPropostaBusiness _propostaBusiness;
         /// <summary>
-        /// AnunciosController
+        /// Construtor
         /// </summary>
         /// <param name="context"></param>
         /// <param name="unitOfWork"></param>
         /// <param name="uriService"></param>
-        /// <param name="anuncioBusiness"></param>
-        public AnunciosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IAnuncioBusiness anuncioBusiness) : base(context, unitOfWork, uriService)
+        /// <param name="propostaBusiness"></param>
+        public PropostasController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IPropostaBusiness propostaBusiness) : base(context, unitOfWork, uriService)
         {
-            _context = context;
-            _anuncioBusiness = anuncioBusiness;
+            _propostaBusiness = propostaBusiness;
         }
 
-
         /// <summary>
-        /// Retornar todas os anuncios com paginação
+        /// Retornar todas as propostas com paginação
         /// </summary>
         /// <returns>Lista de anuncios</returns>
         /// <response code="200">Retorna lista com todos anuncios</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
         [Authorize]
-        public ActionResult<PagedResponse<List<Brinquedo>>> GetAnuncios([FromQuery] PaginationFilter filter)
+        public ActionResult<PagedResponse<List<Proposta>>> GetPropostas([FromQuery] PaginationFilter filter)
         {
             var route = Request.Path.Value;
             int countPages = 0;
-            var pagedData = _anuncioBusiness.GetAll(filter, out countPages).ToList();
-            PagedResponse<List<Anuncio>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
+            var pagedData = _propostaBusiness.GetAll(filter, out countPages).ToList();
+            PagedResponse<List<Proposta>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
 
             return Ok(pagedReponse);
         }
 
-        /// Get api/v1/anuncios/id
+        /// Get api/v1/propostas/id
         /// <summary>
-        /// Retorna anuncio conforme ID
+        /// Retorna proposta conforme ID
         /// </summary>
         /// <returns>Lista de anuncios</returns>
-        /// <response code="200">Retorna o anuncio conforme ID</response>
+        /// <response code="200">Retorna a proposta conforme ID</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet("{id}")]
         [Authorize]
-        public ActionResult<Anuncio> GetAnuncio(Guid id)
+        public ActionResult<Estado> GetProposta(Guid id)
         {
-            var anuncio = _anuncioBusiness.GetById(id);
-            if (anuncio == null)
+            var proposta = _propostaBusiness.GetById(id);
+            if (proposta == null)
                 return NotFound();
 
-            return Ok(anuncio);
+            return Ok(proposta);
         }
 
-        /// Put api/v1/anuncios/id
+        /// Put api/v1/proposta/id
         /// <summary>
-        /// Altera dados do anuncio
+        /// Altera dados da proposta
         /// </summary>
         /// <returns>Lista de usuários</returns>
-        /// <response code="204">Retorna se o anuncio foi alterado com sucesso</response>
-        /// <response code="400">Retorna se houve algum erro na alteração do anuncio.</response>
-        /// <response code="404">Retorna se o anuncio não foi encontrado.</response>
+        /// <response code="204">Retorna se a proposta foi alterado com sucesso</response>
+        /// <response code="400">Retorna se houve algum erro na alteração da proposta.</response>
+        /// <response code="404">Retorna se a proposta não foi encontrado.</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
 
         [HttpPut("{id}")]
         [Authorize]
-        public ActionResult<Estado> PutAnuncio(Guid id, Anuncio anuncio)
+        public ActionResult<Proposta> PutProposta(Guid id, Proposta proposta)
         {
-            if (id != anuncio.Id)
+            if (id != proposta.Id)
             {
                 return BadRequest();
             }
 
             try
             {
-                var result = _anuncioBusiness.Update(anuncio);
+                var result = _propostaBusiness.Update(proposta);
 
                 if (result.IsValid)
                 {
                     _unitOfWork.Commit();
 
-                    return CreatedAtAction("GetAnuncio", new { id = anuncio.Id }, anuncio);
+                    return CreatedAtAction("GetProposta", new { id = proposta.Id }, proposta);
                 }
 
                 _unitOfWork.Rollback();
@@ -113,7 +110,7 @@ namespace TrocaToy.Controllers.v1
             {
                 _unitOfWork.Rollback();
 
-                if (!AnuncioExists(id))
+                if (!PropostaExists(id))
                 {
                     return NotFound();
                 }
@@ -125,23 +122,23 @@ namespace TrocaToy.Controllers.v1
             }
         }
 
-        /// Put api/v1/anuncios/id
+        /// Put api/v1/propostas/id
         /// <summary>
-        /// Altera dados do anuncio
+        /// Altera dados da proposta
         /// </summary>
         /// <returns>Lista de anuncio</returns>
-        /// <response code="201">Retorna se a anuncio foi criado com sucesso</response>
-        /// <response code="400">Retorna se houve algum erro na criação da cidade.</response>
+        /// <response code="201">Retorna se a proposta foi criado com sucesso</response>
+        /// <response code="400">Retorna se houve algum erro na criação da proposta.</response>
         [HttpPost]
-        public ActionResult<Anuncio> PostAnuncio([FromBody] Anuncio anuncio)
+        public ActionResult<Proposta> PostProposta([FromBody] Proposta proposta)
         {
             try
             {
-                var result = _anuncioBusiness.Insert(anuncio);
+                var result = _propostaBusiness.Insert(proposta);
                 if (result.IsValid)
                 {
                     _unitOfWork.Commit();
-                    return CreatedAtAction("GetAnuncio", new { id = anuncio.Id }, anuncio);
+                    return CreatedAtAction("GetProposta", new { id = proposta.Id }, proposta);
                 }
 
                 _unitOfWork.Rollback();
@@ -151,7 +148,7 @@ namespace TrocaToy.Controllers.v1
             {
                 _unitOfWork.Rollback();
 
-                if (AnuncioExists(anuncio.Id))
+                if (PropostaExists(proposta.Id))
                 {
                     return Conflict(ex.Message);
                 }
@@ -167,29 +164,29 @@ namespace TrocaToy.Controllers.v1
             }
         }
 
-        /// Delete api/v1/anuncios/id
+        /// Delete api/v1/propostas/id
         /// <summary>
         /// Altera dados do anuncio
         /// </summary>
         /// <returns>Lista de usuários</returns>
-        /// <response code="200">Retorna se o anuncio foi deletado com sucesso.</response>
-        /// <response code="409">Retorna se houve algum erro na deleção do anuncio.</response>
-        /// <response code="404">Retorna se o anuncio não foi encontrado.</response>
+        /// <response code="200">Retorna se a proposta foi deletado com sucesso.</response>
+        /// <response code="409">Retorna se houve algum erro na deleção da proposta.</response>
+        /// <response code="404">Retorna se a proposta não foi encontrado.</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpDelete("{id}")]
         [Authorize]
-        public ActionResult<Usuario> DeleteAnuncio(Guid id)
+        public ActionResult<Usuario> DeleteProposta(Guid id)
         {
-            var anuncioExiste = AnuncioExists(id);
+            var propostaExiste = PropostaExists(id);
 
-            if (!anuncioExiste)
+            if (!propostaExiste)
             {
                 return NotFound();
             }
 
             try
             {
-                _anuncioBusiness.Delete(id);
+                _propostaBusiness.Delete(id);
                 _unitOfWork.Commit();
                 return Ok(id);
             }
@@ -200,10 +197,9 @@ namespace TrocaToy.Controllers.v1
             }
         }
 
-        private bool AnuncioExists(Guid id)
+        private bool PropostaExists(Guid id)
         {
-            return _anuncioBusiness.GetById(id) != null;
+            return _propostaBusiness.GetById(id) != null;
         }
     }
 }
-

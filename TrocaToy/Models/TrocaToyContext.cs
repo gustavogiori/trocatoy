@@ -29,7 +29,7 @@ namespace TrocaToy.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-GTU7Q8L;Initial Catalog=TrocaToy;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-GNR3UB4;Initial Catalog=TrocaToy;Integrated Security=True");
             }
         }
 
