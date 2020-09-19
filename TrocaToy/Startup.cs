@@ -41,16 +41,66 @@ namespace TrocaToy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
-            services.AddScoped<BrinquedoSchema>();
-            services
-                .AddGraphQL(o => { o.ExposeExceptions = true; })
-                .AddGraphTypes(ServiceLifetime.Scoped);
-            services.Configure<IISServerOptions>(options =>
+            AddGraphQL(services);
+            AddVersionamento(services);
+            AddAuthentication(services);
+            services.AddCors();
+            AddSwagger(services);
+            AddNewtonsoftJson(services);
+            services.AddControllersWithViews();
+            AddInjectionDependency(services);
+            services.AddHttpContextAccessor();
+            services.AddMvc(options => options.ModelValidatorProviders.Clear());
+            AddUriService(services);
+            services.AddSpaStaticFiles(configuration =>
             {
-                options.AllowSynchronousIO = true;
+                configuration.RootPath = "ClientApp/dist";
             });
+        }
 
+        private static void AddUriService(IServiceCollection services)
+        {
+            services.AddSingleton<IUriService>(o =>
+            {
+                var accessor = o.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                return new UriService(uri);
+            });
+        }
+
+        private static void AddNewtonsoftJson(IServiceCollection services)
+        {
+            services.AddControllers().AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+        }
+
+        private static void AddAuthentication(IServiceCollection services)
+        {
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+             {
+                 x.RequireHttpsMetadata = false;
+                 x.SaveToken = true;
+                 x.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     ValidateIssuerSigningKey = true,
+                     IssuerSigningKey = new SymmetricSecurityKey(key),
+                     ValidateIssuer = false,
+                     ValidateAudience = false
+                 };
+             });
+        }
+
+        private static void AddVersionamento(IServiceCollection services)
+        {
             services.AddApiVersioning(options =>
             {
                 options.UseApiBehavior = false;
@@ -62,19 +112,28 @@ namespace TrocaToy
                     new QueryStringApiVersionReader(),
                     new UrlSegmentApiVersionReader());
             });
-            services.AddAuthentication(x =>
+            _ = services.AddVersionedApiExplorer(o =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.GroupNameFormat = "'v'VVV";
+                o.SubstituteApiVersionInUrl = true;
             });
-            services.AddCors();
+        }
 
-            services.AddApiVersioning(o =>
+        private static void AddGraphQL(IServiceCollection services)
+        {
+            services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
+            services.AddScoped<BrinquedoSchema>();
+            services
+                .AddGraphQL(o => { o.ExposeExceptions = true; })
+                .AddGraphTypes(ServiceLifetime.Scoped);
+            services.Configure<IISServerOptions>(options =>
             {
-                o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AllowSynchronousIO = true;
             });
+        }
 
+        private static void AddSwagger(IServiceCollection services)
+        {
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -114,56 +173,6 @@ namespace TrocaToy
                     }
                 });
             });
-
-
-
-            _ = services.AddVersionedApiExplorer(o =>
-            {
-                o.GroupNameFormat = "'v'VVV";
-                o.SubstituteApiVersionInUrl = true;
-            });
-
-
-            var key = Encoding.ASCII.GetBytes(Settings.Secret);
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
-
-            services.AddControllers().AddNewtonsoftJson(opt =>
-            {
-                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            });
-            services.AddControllersWithViews();
-            AddInjectionDependency(services);
-            services.AddHttpContextAccessor();
-            services.AddMvc(options => options.ModelValidatorProviders.Clear());
-            services.AddSingleton<IUriService>(o =>
-            {
-                var accessor = o.GetRequiredService<IHttpContextAccessor>();
-                var request = accessor.HttpContext.Request;
-                var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
-                return new UriService(uri);
-            });
-
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
         }
 
         private static void AddInjectionDependency(IServiceCollection services)
@@ -180,6 +189,8 @@ namespace TrocaToy
             services.AddTransient<IBrinquedoBusiness, BrinquedoBusiness>();
             services.AddTransient<IAnuncioBusiness, AnuncioBusiness>();
             services.AddTransient<IAnuncioRepository, AnuncioRepository>();
+            services.AddTransient<IPropostaBusiness, PropostaBusiness>();
+            services.AddTransient<IPropostaRepository, PropostaRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
