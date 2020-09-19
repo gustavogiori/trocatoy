@@ -191,6 +191,8 @@ namespace TrocaToy
             services.AddTransient<IAnuncioRepository, AnuncioRepository>();
             services.AddTransient<IPropostaBusiness, PropostaBusiness>();
             services.AddTransient<IPropostaRepository, PropostaRepository>();
+            services.AddTransient<IItensPropostaBusiness, ItensPropostaBusiness>();
+            services.AddTransient<IItensPropostaRepository, ItensPropostaRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
