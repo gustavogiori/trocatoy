@@ -99,17 +99,16 @@ namespace TrocaToy.Controllers
 
                 usuario = GetUsuarioComValorDeDadosNaoEditaveis(usuario, _usuarioBusiness.GetById(id));
                 var result = _usuarioBusiness.Update(usuario);
-                usuario = result.Item1;
 
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
 
-                    return Ok(usuario);
+                    return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2.ErrorMessage);
+                return BadRequest(result);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -141,17 +140,16 @@ namespace TrocaToy.Controllers
             try
             {
                 usuario = JsonService<Usuario>.GetObject(json);
-
                 var result = _usuarioBusiness.Insert(usuario);
-                usuario = result.Item1;
-                if (result.Item2.IsValid)
+
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
                     return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2);
+                return BadRequest(result);
             }
             catch (DbUpdateException ex)
             {

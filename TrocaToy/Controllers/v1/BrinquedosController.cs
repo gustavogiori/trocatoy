@@ -42,22 +42,7 @@ namespace TrocaToy.Controllers.v1
         {
             _brinquedoBusiness = brinquedoBusiness;
         }
-        [HttpGet, Route("GetBrinquedoGraphQL")]
-        public async Task<List<Brinquedo>> GetGraphQL(string query)
-        {
-            using (GraphQLClient graphQLClient = new GraphQLClient("https://localhost:44351/graphql"))
-            {
-                var queryRequest = new GraphQLRequest
-                {
-                    Query = @"   
-                        { brinquedos   
-                            { nome marca }   
-                        }",
-                };
-                var response = await graphQLClient.PostAsync(queryRequest);
-                return response.GetDataFieldAs<List<Brinquedo>>("brinquedos");
-            }
-        }
+
         // GET: api/Brinquedos
         /// <summary>
         /// Retornar todos os brinquedos
@@ -130,17 +115,15 @@ namespace TrocaToy.Controllers.v1
             try
             {
                 var result = _brinquedoBusiness.Update(brinquedo);
-                brinquedo = result.Item1;
-
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
 
-                    return Ok(brinquedo);
+                    return CreatedAtAction("GetBrinquedo", new { id = brinquedo.Id }, brinquedo);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2.ErrorMessage);
+                return BadRequest(result.ErrorMessage);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -175,16 +158,15 @@ namespace TrocaToy.Controllers.v1
                 brinquedo = JsonService<Brinquedo>.GetObject(json);
 
                 var result = _brinquedoBusiness.Insert(brinquedo);
-                brinquedo = result.Item1;
 
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
                     return CreatedAtAction("GetBrinquedo", new { id = brinquedo.Id }, brinquedo);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2);
+                return BadRequest(result.ErrorMessage);
             }
             catch (DbUpdateException ex)
             {

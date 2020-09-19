@@ -60,7 +60,7 @@ namespace Infrastructure.Business
             return _repository.GetById(id);
         }
 
-        public virtual Tuple<T, ValidationModel> Insert(T obj)
+        public virtual ValidationModel Insert(T obj)
         {
             var statusModel = IsValid(obj);
 
@@ -68,7 +68,7 @@ namespace Infrastructure.Business
             {
                 obj = _repository.Insert(obj);
             }
-            return new Tuple<T, ValidationModel>(obj, statusModel);
+            return statusModel;
         }
 
         public virtual ValidationModel IsValid(T obj)
@@ -91,7 +91,7 @@ namespace Infrastructure.Business
             }
             return validationModel;
         }
-        public virtual Tuple<T, ValidationModel> Update(T obj)
+        public virtual ValidationModel Update(T obj)
         {
             var statusModel = IsValid(obj);
 
@@ -100,7 +100,7 @@ namespace Infrastructure.Business
                 obj = _repository.Update(obj);
             }
 
-            return new Tuple<T, ValidationModel>(obj, statusModel);
+            return statusModel;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace TrocaToy.Business
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override Tuple<Usuario, ValidationModel> Insert(Usuario obj)
+        public override ValidationModel Insert(Usuario obj)
         {
             obj.Senha = MD5Operation.GerarHashMd5(obj.Senha);
             obj.Regra = string.IsNullOrEmpty(obj.Regra) ? RegraUsuario.Usuario.ToString() : obj.Regra;
@@ -60,14 +60,12 @@ namespace TrocaToy.Business
 
 
             if (!validationModel.IsValid)
-                return new Tuple<Usuario, ValidationModel>(obj, validationModel);
+                return validationModel;
 
             return base.Insert(obj);
         }
         public override IEnumerable<Usuario> GetAll()
         {
-            var teste = DependencyResolver.Current.GetService<IEstadoBusiness>();
-            var tt = teste.GetAll();
             return base.GetAll();
         }
 

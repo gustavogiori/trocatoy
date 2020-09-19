@@ -90,17 +90,16 @@ namespace TrocaToy.Controllers.v1
             try
             {
                 var result = _cidadeBusiness.Update(cidade);
-                cidade = result.Item1;
 
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
 
-                    return Ok(cidade);
+                    return CreatedAtAction("GetCidade", new { id = cidade.Id }, cidade);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2.ErrorMessage);
+                return BadRequest(result.ErrorMessage);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -134,15 +133,14 @@ namespace TrocaToy.Controllers.v1
                 cidade = JsonService<Cidade>.GetObject(json);
 
                 var result = _cidadeBusiness.Insert(cidade);
-                cidade = result.Item1;
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
                     return CreatedAtAction("GetCidade", new { id = cidade.Id }, cidade);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2);
+                return BadRequest(result);
             }
             catch (DbUpdateException ex)
             {

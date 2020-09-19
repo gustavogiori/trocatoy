@@ -17,8 +17,8 @@ namespace Infrastructure.Business
         IEnumerable<T> GetByCriteria(Expression<Func<T, bool>> predicate, PaginationFilter filter, out int countPages);
         IEnumerable<T> GetByCriteria(Expression<Func<T, bool>> predicate);
         T GetById(Guid id);
-        Tuple<T, ValidationModel> Insert(T obj);
-        Tuple<T, ValidationModel> Update(T obj);
+        ValidationModel Insert(T obj);
+        ValidationModel Update(T obj);
         void Delete(Guid id);
     }
 }

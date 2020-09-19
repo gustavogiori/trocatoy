@@ -90,17 +90,16 @@ namespace TrocaToy.Controllers.v1
             try
             {
                 var result = _estadoBusiness.Update(estado);
-                estado = result.Item1;
 
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
 
-                    return Ok(estado);
+                    return CreatedAtAction("GetEstado", new { id = estado.Id }, estado);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2.ErrorMessage);
+                return BadRequest(result);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -134,15 +133,14 @@ namespace TrocaToy.Controllers.v1
                 estado = JsonService<Estado>.GetObject(json);
                 var result = _estadoBusiness.Insert(estado);
 
-                estado = result.Item1;
-                if (result.Item2.IsValid)
+                if (result.IsValid)
                 {
                     _unitOfWork.Commit();
                     return CreatedAtAction("GetEstado", new { id = estado.Id }, estado);
                 }
 
                 _unitOfWork.Rollback();
-                return BadRequest(result.Item2);
+                return BadRequest(result);
             }
             catch (DbUpdateException ex)
             {
