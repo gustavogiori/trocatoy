@@ -143,11 +143,11 @@ namespace TrocaToy.Controllers.v1
 
         /// Put api/v1/brinquedos/id
         /// <summary>
-        /// Altera dados do binquedo
+        /// Adicionar novo brinquedo
         /// </summary>
         /// <returns>Brinquedo</returns>
         /// <response code="201">Retorna se o brinquedo foi criado com sucesso</response>
-        /// <response code="400">Retorna se houve algum erro na criação do usuário.</response>
+        /// <response code="400">Retorna se houve algum erro na criação do brinquedo.</response>
         [HttpPost]
         [Authorize]
         public ActionResult<Brinquedo> PostBrinquedo([FromBody] Brinquedo json)

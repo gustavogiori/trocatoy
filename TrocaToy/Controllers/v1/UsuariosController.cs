@@ -142,12 +142,10 @@ namespace TrocaToy.Controllers
         /// <response code="201">Retorna se o usuário foi criado com sucesso</response>
         /// <response code="400">Retorna se houve algum erro na criação do usuário.</response>
         [HttpPost]
-        public ActionResult<Usuario> PostUsuario([FromBody] Usuario json)
+        public ActionResult<Usuario> PostUsuario([FromBody] Usuario usuario)
         {
-            Usuario usuario = new Usuario();
             try
             {
-                usuario = JsonService<Usuario>.GetObject(json);
                 var result = _usuarioBusiness.Insert(usuario);
 
                 if (result.IsValid)
