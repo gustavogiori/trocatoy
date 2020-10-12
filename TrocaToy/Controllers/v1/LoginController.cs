@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Infrastructure.Models;
 using Infrastructure.Security;
@@ -39,15 +40,15 @@ namespace TrocaToy.Controllers.v1
         {
             if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Senha))
             {
-                return BadRequest(new Response<UsuarioLogin>() { Succeeded = false, Message = "É preciso preencher usuário e senha!" });
+                return BadRequest(new Response<UsuarioLogin>() { Succeeded = false, Errors = new[] { "É preciso preencher usuário e senha!" } });
             }
-            var teste = Guid.NewGuid();
+
             // Recupera o usuário
             var user = _usuarioRepository.GetByCriteria(x => x.Email == model.Email && x.Senha == MD5Operation.GerarHashMd5(model.Senha)).FirstOrDefault();
 
             // Verifica se o usuário existe
             if (user == null)
-                return NotFound(new { message = "Usuário ou senha inválidos" });
+                return BadRequest(new Response<UsuarioLogin>() { Succeeded = false, Errors = new[] { "Usuário ou senha inválidos!" } });
 
             model.SetNivelPermissao(Convert.ToInt32(user.Regra));
 

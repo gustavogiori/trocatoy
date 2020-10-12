@@ -45,11 +45,10 @@ namespace TrocaToy.Controllers.v1
         /// </summary>
         /// <returns>Lista de usuários</returns>
         /// <response code="200">Retorna lista com todos estados</response>
-        /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
-        [Authorize]
-        public ActionResult<PagedResponse<List<Estado>>> GetEstados([FromQuery] PaginationFilter filter)
+        public ActionResult<PagedResponse<List<Estado>>> GetEstados(int PageNumber, int PageSize)
         {
+            PaginationFilter filter = new PaginationFilter(PageNumber, PageSize);
             var route = Request.Path.Value;
             int countPages = 0;
             var pagedData = _estadoBusiness.GetAll(filter, out countPages).ToList();

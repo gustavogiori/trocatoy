@@ -1,9 +1,11 @@
 ﻿using Infrastructure;
 using Infrastructure.Business;
+using Infrastructure.Models;
 using Infrastructure.Security;
 using Infrastructure.Utils;
 using Infrastructure.Validation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,21 +49,15 @@ namespace TrocaToy.Business
         /// <returns></returns>
         public override ValidationModel Insert(Usuario obj)
         {
-            obj.Senha = MD5Operation.GerarHashMd5(obj.Senha);
-            obj.Regra = string.IsNullOrEmpty(obj.Regra) ? RegraUsuario.Usuario.ToString() : obj.Regra;
-
             var validationModel = IsValid(obj);
-
-            ValidaDados(obj, validationModel);
-
+            validationModel = ValidaDados(obj, validationModel);
+            if (!validationModel.IsValid)
+                return validationModel;
+            obj.Senha = MD5Operation.GerarHashMd5(obj.Senha);
+            obj.Regra = string.IsNullOrEmpty(obj.Regra) ? ((int)NivelPermissaoEnum.User).ToString() : obj.Regra;
             GeraNovoGuid(obj);
 
             obj = SetIdUsuarioEndereco(obj);
-
-
-            if (!validationModel.IsValid)
-                return validationModel;
-
             return base.Insert(obj);
         }
         public override IEnumerable<Usuario> GetAll()
@@ -74,23 +70,43 @@ namespace TrocaToy.Business
             base.Delete(id);
         }
 
-        private void ValidaDados(Usuario obj, ValidationModel validationModel)
+        private ValidationModel ValidaDados(Usuario obj, ValidationModel validationModel)
         {
-            if (this.GetByCriteria(x => x.Cpf == obj.Cpf).Any())
+            if (!CpfValido(obj))
             {
-                validationModel.ErrorMessage?.Add("Já existe usuário com o cpf cadastrado!");
-                validationModel.IsValid = false;
+                validationModel = GeraMsgErro("CPF não é valido!", validationModel);
             }
-            if (this.GetByCriteria(x => x.Email == obj.Email).Any())
+            if (EmailJaCadastrado(obj))
             {
-                validationModel.ErrorMessage?.Add("Já existe usuário com o email cadastrado!");
-                validationModel.IsValid = false;
+                validationModel = GeraMsgErro("Já existe usuário com o email cadastrado!", validationModel);
             }
-            if (!Validacoes.IsValidCpf(obj.Cpf))
+            if (CPFJaCadastrado(obj))
             {
-                validationModel.ErrorMessage?.Add("CPF não é válido!");
-                validationModel.IsValid = false;
+                validationModel = GeraMsgErro("Já existe usuário com o cpf cadastrado!", validationModel);
             }
+            return validationModel;
+        }
+
+        private ValidationModel GeraMsgErro(string msgErro, ValidationModel validationModel)
+        {
+            validationModel.ErrorMessage?.Add(msgErro);
+            validationModel.IsValid = false;
+            return validationModel;
+        }
+
+        private bool CpfValido(Usuario obj)
+        {
+            return Validacoes.IsValidCpf(obj.Cpf);
+        }
+
+        private bool EmailJaCadastrado(Usuario obj)
+        {
+            return this.GetByCriteria(x => x.Email == obj.Email).Any();
+        }
+
+        private bool CPFJaCadastrado(Usuario obj)
+        {
+            return this.GetByCriteria(x => x.Cpf == obj.Cpf).Any();
         }
     }
 }

@@ -1,7 +1,18 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "downlevelIteration": true,
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es2016"
+    ],
     "outDir": "../out-tsc/spec",
+    "module": "esnext",
+    "target": "es2015",
+    "baseUrl": "",
     "types": [
       "jasmine",
       "node"
@@ -12,7 +23,6 @@
     "polyfills.ts"
   ],
   "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
+    "**/*.spec.ts"
   ]
 }

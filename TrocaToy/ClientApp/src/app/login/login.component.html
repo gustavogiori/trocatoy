@@ -1,0 +1,73 @@
+<section class="content-header"></section>
+<section class="content">
+  <section class="invoice">
+    <form [formGroup]="loginForm" novalidate>
+      <div class="row">
+        <div class="col-xs-12">
+          <h2 class="page-header">
+            <i class="fa fa-sign-in"></i> Acessar a aplicação
+          </h2>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+        <ng-container  *ngIf="hasError">
+          <h3>Erro ao logar:</h3>
+        <ng-container *ngFor="let erro of msgsErro">
+        <div class="col-xs-10 col-sm-5">
+          <span class="help-block pull-left has-error-block"
+            ><i class="fa fa-remove"></i> {{erro}} </span
+          >
+        </div>
+      </ng-container>
+      </ng-container>
+    </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <p class="lead">Dados de login:</p>
+        </div>
+
+        <div class="col-sm-6 col-xs-12">
+          <app-input
+            errorMessage="E-mail não é válido."
+            label="E-mail"
+          >
+            <input
+              class="form-control"
+              formControlName="Email"
+              required
+              placeholder="E-mail"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="Campo é obrigatório." label="Senha">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="Senha"
+              placeholder="Senha"
+              type="password"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 col-xs-12">
+          <button
+            (click)="logar(loginForm.value)"
+            class="btn btn-success pull-left"
+            [disabled]="!loginForm.valid"
+          >
+            <i class="fa fa-sign-in"></i> Logar
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+</section>

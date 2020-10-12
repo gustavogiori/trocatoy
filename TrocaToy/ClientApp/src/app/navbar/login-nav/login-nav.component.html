@@ -1,0 +1,17 @@
+<ul class="nav navbar-nav pull-right">
+  <ng-container
+    *ngIf="
+      !currentUser()
+      else elseTemplate
+    "
+  >
+    <li routerLinkActive=""><a [routerLink]="['/cadastro']">Cadastrar</a></li>
+    <li routerLinkActive=""><a [routerLink]="['/login']">Logar</a></li>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <li routerLinkActive="">
+      <a [routerLink]="['/cadastro']">{{ currentUser().user.nome }}</a>
+    </li>
+    <li routerLinkActive=""><a (click)="logout()">Sair</a></li>
+  </ng-template>
+</ul>

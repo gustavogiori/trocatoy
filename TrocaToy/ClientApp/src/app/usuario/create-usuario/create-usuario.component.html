@@ -1,0 +1,209 @@
+<section class="content-header"></section>
+<section class="content">
+  <section class="invoice">
+    <form [formGroup]="userForm" novalidate>
+      <div class="row">
+        <div class="col-xs-12">
+          <h2 class="page-header">
+            <i class="fa fa-user-o"></i> Cadastrar Usuários
+          </h2>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+        <ng-container  *ngIf="hasError">
+          <h3>Erro ao cadastrar usuário:</h3>
+        <ng-container *ngFor="let erro of msgsErro">
+        <div class="col-xs-10 col-sm-5">
+          <span class="help-block pull-left has-error-block"
+            ><i class="fa fa-remove"></i> {{erro}} </span
+          >
+        </div>
+      </ng-container>
+      </ng-container>
+    </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <p class="lead">Dados Pessoais:</p>
+        </div>
+
+        <div class="col-sm-6 col-xs-12">
+          <app-input
+            errorMessage="Campo obrigatório e com 5 caracteres"
+            label="Nome"
+          >
+            <input
+              class="form-control"
+              formControlName="nome"
+              required
+              placeholder="Nome"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="CPF inválido" label="CPF">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="cpf"
+              mask="000.000.000-00"
+              placeholder="CPF"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="Campo é obrigatório." label="Telefone">
+            <input
+              type="text"
+              class="form-control"
+              mask="(00) 0 0000-0000"
+              formControlName="telefone"
+              placeholder="Telefone"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <p class="lead">Dados de Acesso:</p>
+        </div>
+        <div class="col-sm-9 col-xs-12">
+          <app-input errorMessage="E-mail inválido" label="E-mail">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="email"
+              placeholder="E-mail"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="Campo Obrigatório" label="Senha">
+            <input
+              type="password"
+              class="form-control"
+              formControlName="senha"
+              placeholder="Senha"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+      </div>
+    </form>
+    <form [formGroup]="addressForm" novalidate>
+      <div class="row">
+        <div class="col-xs-12">
+          <p class="lead">Endereço:</p>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="Campo obrigatório." label="CEP">
+            <input
+              (blur)="digitouCep($event.target.value)"
+              class="form-control"
+              formControlName="cep"
+              placeholder="CEP"
+              mask="00000-000"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+        <div class="col-sm-9 col-xs-12">
+          <app-input
+            errorMessage="Campo obrigatório e com 5 caracteres"
+            label="Rua"
+          >
+            <input
+              class="form-control"
+              formControlName="rua"
+              placeholder="Rua"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <app-input
+            errorMessage="Obrigatório e somente números"
+            label="Número"
+          >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numero"
+              placeholder="Número"
+              autocomplete="off"
+            />
+          </app-input>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <app-input label="Complemento">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="complemento"
+              placeholder="Complemento"
+            />
+          </app-input>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="Campo obrigatório." label="Estado">
+            <select
+              data-show-subtext="true"
+              data-live-search="true"
+              class="selectpicker form-control"
+              (change)="mudouEstado()"
+              formControlName="IdEstado"
+              name="IdEstado"
+              value="IdEstado"
+              required
+            >
+              <option value="">Selecione um estado...</option>
+              <option *ngFor="let estado of estados" [ngValue]="estado.id">
+                {{ estado.descricao }}
+              </option>
+            </select>
+          </app-input>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <app-input errorMessage="Campo obrigatório." label="Cidade">
+            <select
+              data-show-subtext="true"
+              data-live-search="true"
+              class="selectpicker form-control"
+              formControlName="IdCidade"
+              name="IdCidade"
+              value="IdCidade"
+              required
+            >
+              <option value="">Selecione uma cidade...</option>
+              <option *ngFor="let cidade of cidades" [ngValue]="cidade.id">
+                {{ cidade.descricao }}
+              </option>
+            </select>
+          </app-input>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            (click)="salvar(userForm.value, addressForm.value)"
+            class="btn btn-success pull-right"
+            [disabled]="!userForm.valid || !addressForm.valid"
+          >
+            <i class="fa fa-floppy-o"></i> Cadastrar
+          </button>
+        </div>
+      </div>
+    </form>
+    <!-- FIM DO CONTEUDO-->
+  </section>
+</section>

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace TrocaToy.Models
@@ -18,13 +19,13 @@ namespace TrocaToy.Models
         [Required]
         [MinLength(11)]
         public string Cpf { get; set; }
-        [Required]
         public string Rg { get; set; }
         public string Telefone { get; set; }
-        [Required]
         
+        [Required] 
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        
         [Required]
         public string Senha { get; set; }
         public string Regra { get; set; }

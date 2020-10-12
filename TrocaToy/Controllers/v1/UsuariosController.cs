@@ -145,7 +145,7 @@ namespace TrocaToy.Controllers
         public ActionResult<Usuario> PostUsuario([FromBody] Usuario usuario)
         {
             try
-            {
+            {         
                 var result = _usuarioBusiness.Insert(usuario);
 
                 if (result.IsValid)

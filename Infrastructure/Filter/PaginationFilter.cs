@@ -11,12 +11,13 @@ namespace Infrastructure.Filter
         public PaginationFilter()
         {
             this.PageNumber = 1;
-            this.PageSize = 5;
+            this.PageSize = 10;
         }
         public PaginationFilter(int pageNumber, int pageSize)
         {
-            this.PageNumber = pageNumber < 1 ? 1 : pageNumber;
-            this.PageSize = pageSize > 5 ? 5 : pageSize;
+            this.PageNumber = pageNumber;
+            this.PageSize = pageSize;
+
         }
     }
 }
