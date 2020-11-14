@@ -1,0 +1,114 @@
+<app-region-page [Title]="titulo" [classIcon]="faIcon">
+  <div body>
+    <form [formGroup]="anuncioForm" novalidate>
+      <div class="row">
+        <div>
+          <ng-container *ngIf="hasError">
+            <h3>Erro ao cadastrar usuário:</h3>
+            <ng-container *ngFor="let erro of msgsErro">
+              <div class="col-xs-10 col-sm-5">
+                <span class="help-block pull-left has-error-block"
+                  ><i class="fa fa-remove"></i> {{ erro }}
+                </span>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <p class="lead">Dados do anuncio:</p>
+        </div>
+
+        <div class="col-sm-12 col-xs-12">
+          <app-input errorMessage="Campo obrigatório." label="Brinquedo">
+            <select
+              data-show-subtext="true"
+              data-live-search="true"
+              class="selectpicker form-control"
+              formControlName="IdBrinquedo"
+              name="IdBrinquedo"
+              value="IdBrinquedo"
+              required
+            >
+              <option value="">Selecione um brinquedo...</option>
+              <option
+                *ngFor="let brinquedo of brinquedos"
+                [ngValue]="brinquedo.id"
+              >
+                {{ brinquedo.nome }}
+              </option>
+            </select>
+          </app-input>
+        </div>
+        <div class="col-sm-12 col-xs-12">
+          <app-input
+            errorMessage="Campo obrigatório."
+            label="Endereço de entrega"
+          >
+            <select
+              data-show-subtext="true"
+              data-live-search="true"
+              class="selectpicker form-control"
+              formControlName="IdEnderecoEntrega"
+              name="IdEnderecoEntrega"
+              value="IdEnderecoEntrega"
+              required
+            >
+              <option value="">Selecione um endereço...</option>
+              <option
+                *ngFor="let endereco of enderecos"
+                [ngValue]="endereco.id"
+              >
+                {{ endereco.rua }} - {{ endereco.numero }}
+              </option>
+            </select>
+          </app-input>
+        </div>
+        <div class="col-sm-12 col-xs-12">
+          <app-input errorMessage="Campo obrigatório." label="Disponivel">
+            <select
+              data-show-subtext="true"
+              data-live-search="true"
+              class="selectpicker form-control"
+              formControlName="TipoDisponibilidade"
+              name="TipoDisponibilidade"
+              value="TipoDisponibilidade"
+              required
+            >
+              <option value="">Selecione um tipo...</option>
+              <option
+                *ngFor="let tipoDisponibilidade of tiposDisponibilidade"
+                [ngValue]="tipoDisponibilidade.codigo"
+              >
+                {{ tipoDisponibilidade.descricao }}
+              </option>
+            </select>
+          </app-input>
+        </div>
+        <div class="col-sm-12 col-xs-12">
+          <app-input errorMessage="Campo é obrigatório." label="Telefone">
+            <input
+              type="text"
+              class="form-control"
+              mask="(00) 0 0000-0000||(00) 0000-0000"
+              formControlName="TelefoneContato"
+              placeholder="Telefone"
+            />
+          </app-input>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            (click)="salvarAnuncio(anuncioForm.value)"
+            class="btn btn-success pull-right"
+            [disabled]="!anuncioForm.valid || !anuncioForm.valid"
+          >
+            <i class="fa fa-floppy-o"></i> Cadastrar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</app-region-page>

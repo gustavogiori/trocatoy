@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Business;
+using Infrastructure.Filter;
+using System.Collections.Generic;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 

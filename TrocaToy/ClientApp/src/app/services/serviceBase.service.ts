@@ -1,13 +1,24 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { PagedResponse } from "app/models/PagedResponse";
 import { PaginationFilter } from "app/models/PaginationFilter";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-
+@Injectable({
+  providedIn: "root",
+})
 export class ServiceBaseService {
+  public baseUrl: string;
   getAll(pageNumber: number, pageSize: number): Observable<PagedResponse> {
     return this.http
-      .get<PagedResponse>(`${this.baseUrl}?PageNumber=${pageNumber}&PageSize=${pageSize}`)
+      .get<PagedResponse>(
+        `${this.baseUrl}?PageNumber=${pageNumber}&PageSize=${pageSize}`
+      )
+      .pipe(map((result) => result));
+  }
+  getAllNotPagination(): Observable<any> {
+    return this.http
+      .get<PagedResponse>(`${this.baseUrl}`)
       .pipe(map((result) => result));
   }
   filter(campo, valor): Observable<any> {
@@ -43,5 +54,5 @@ export class ServiceBaseService {
     return this.http.delete(this.baseUrl);
   }
 
-  constructor(protected http: HttpClient, public baseUrl: string) {}
+  constructor(protected http: HttpClient) {}
 }

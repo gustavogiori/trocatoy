@@ -17,7 +17,8 @@ export class LoginService extends ServiceBaseService {
   public currentUser: Observable<any>;
 
   constructor(protected http: HttpClient, private router: Router) {
-    super(http, urlLogin);
+    super(http);
+    this.baseUrl = urlLogin;
     this.currentUserSubject = new BehaviorSubject<any>(
       JSON.parse(localStorage.getItem("currentUser"))
     );

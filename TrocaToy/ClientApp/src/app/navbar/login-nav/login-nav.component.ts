@@ -13,8 +13,6 @@ export class LoginNavComponent implements OnInit {
     this.loginService.logout();
   }
   currentUser() {
-    console.log("current");
-    console.log(this.loginService.currentUserValue);
     return this.loginService.currentUserValue;
   }
   ngOnInit() {}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Infrastructure.Filter;
 using Infrastructure.Helpers;
@@ -39,7 +40,25 @@ namespace TrocaToy.Controllers.v1
             _anuncioBusiness = anuncioBusiness;
         }
 
+        /// <summary>
+        /// Retornar todas os anuncios com paginação
+        /// </summary>
+        /// <returns>Lista de anuncios</returns>
+        /// <response code="200">Retorna lista com todos anuncios</response>
+        /// <response code="401">Retorna quando não estiver autenticado.</response>
+        [HttpGet("GetAnunciosUser")]
+        [Authorize]
+        public ActionResult<PagedResponse<List<Brinquedo>>> GetAnunciosUser([FromQuery] PaginationFilter filter)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var teste = identity.Claims.FirstOrDefault().Value;
+            var route = Request.Path.Value;
+            int countPages = 0;
+            var pagedData = _anuncioBusiness.GetAll(filter, out countPages).ToList();
+            PagedResponse<List<Anuncio>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
 
+            return Ok(pagedReponse);
+        }
         /// <summary>
         /// Retornar todas os anuncios com paginação
         /// </summary>
@@ -50,12 +69,19 @@ namespace TrocaToy.Controllers.v1
         [Authorize]
         public ActionResult<PagedResponse<List<Brinquedo>>> GetAnuncios([FromQuery] PaginationFilter filter)
         {
-            var route = Request.Path.Value;
-            int countPages = 0;
-            var pagedData = _anuncioBusiness.GetAll(filter, out countPages).ToList();
-            PagedResponse<List<Anuncio>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
+            try
+            {
+                var route = Request.Path.Value;
+                int countPages = 0;
+                var pagedData = _anuncioBusiness.GetAll(filter, out countPages).ToList();
+                PagedResponse<List<Anuncio>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
 
-            return Ok(pagedReponse);
+                return Ok(pagedReponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// Get api/v1/anuncios/id
@@ -133,10 +159,12 @@ namespace TrocaToy.Controllers.v1
         /// <response code="201">Retorna se a anuncio foi criado com sucesso</response>
         /// <response code="400">Retorna se houve algum erro na criação da cidade.</response>
         [HttpPost]
-        public ActionResult<Anuncio> PostAnuncio([FromBody] Anuncio anuncio)
+        public ActionResult<Anuncio> PostAnuncio([FromBody] Anuncio json)
         {
+            var anuncio = JsonService<Anuncio>.GetObject(json);
             try
             {
+
                 var result = _anuncioBusiness.Insert(anuncio);
                 if (result.IsValid)
                 {

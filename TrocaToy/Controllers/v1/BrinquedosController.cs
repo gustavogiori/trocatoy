@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using GraphQL.Client;
 using GraphQL.Common.Request;
@@ -31,6 +32,7 @@ namespace TrocaToy.Controllers.v1
     public class BrinquedosController : BaseController
     {
         IBrinquedoBusiness _brinquedoBusiness;
+        IUsuarioBusiness _usuarioBusiness;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -38,9 +40,10 @@ namespace TrocaToy.Controllers.v1
         /// <param name="unitOfWork"></param>
         /// <param name="uriService"></param>
         /// <param name="brinquedoBusiness"></param>
-        public BrinquedosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IBrinquedoBusiness brinquedoBusiness) : base(context, unitOfWork, uriService)
+        public BrinquedosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IBrinquedoBusiness brinquedoBusiness, IUsuarioBusiness usuarioBusiness) : base(context, unitOfWork, uriService)
         {
             _brinquedoBusiness = brinquedoBusiness;
+            _usuarioBusiness = usuarioBusiness;
         }
 
         // GET: api/Brinquedos
@@ -155,6 +158,9 @@ namespace TrocaToy.Controllers.v1
             Brinquedo brinquedo = new Brinquedo();
             try
             {
+                //var identity = HttpContext.User.Identity as ClaimsIdentity;
+                //var teste = identity.Claims.FirstOrDefault().Value;
+                //json.IdUsuario = _usuarioBusiness.GetByCriteria(x => x.Email == teste).FirstOrDefault().Id;
                 brinquedo = JsonService<Brinquedo>.GetObject(json);
 
                 var result = _brinquedoBusiness.Insert(brinquedo);

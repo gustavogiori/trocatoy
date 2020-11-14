@@ -51,8 +51,10 @@ namespace TrocaToy.Business
         {
             var validationModel = IsValid(obj);
             validationModel = ValidaDados(obj, validationModel);
+
             if (!validationModel.IsValid)
                 return validationModel;
+
             obj.Senha = MD5Operation.GerarHashMd5(obj.Senha);
             obj.Regra = string.IsNullOrEmpty(obj.Regra) ? ((int)NivelPermissaoEnum.User).ToString() : obj.Regra;
             GeraNovoGuid(obj);

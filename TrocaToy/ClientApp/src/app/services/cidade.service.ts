@@ -8,6 +8,7 @@ import { ServiceBaseService } from "./serviceBase.service";
 })
 export class CidadeService extends ServiceBaseService {
   constructor(protected http: HttpClient) {
-    super(http, ApiUrl.baseUrl + "cidades");
+    super(http);
+    this.baseUrl = ApiUrl.baseUrl + "cidades";
   }
 }

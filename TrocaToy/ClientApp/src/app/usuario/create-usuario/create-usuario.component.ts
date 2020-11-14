@@ -6,9 +6,11 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router } from "@angular/router";
+import { LoginComponent } from "app/login/login.component";
 import { Cidade } from "app/models/Cidade";
 import { Endereco } from "app/models/Endereco";
 import { Estado } from "app/models/Estado";
+import { Login } from "app/models/Login";
 import { Usuario } from "app/models/Usuario";
 import { CEPService } from "app/services/CEP.service";
 import { CidadeService } from "app/services/cidade.service";
@@ -36,18 +38,18 @@ export class CreateUsuarioComponent extends AddBase {
     protected estadoService: EstadoService,
     protected cidadeService: CidadeService,
     protected cepService: CEPService,
-    protected router:Router
+    protected router: Router
   ) {
     super(userService, notificationService);
   }
 
   salvarUsuario(userForm: Usuario, addressForm: Endereco) {
+    console.log(addressForm);
     userForm.Endereco = [addressForm];
     this.salvar(userForm);
-
   }
-  afterSave(){
-    this.router.navigateByUrl('/');
+  afterSave() {
+    this.router.navigateByUrl("/login");
   }
   carregaEstados() {
     this.estadoService.getAll(1, 100).subscribe(
@@ -78,9 +80,8 @@ export class CreateUsuarioComponent extends AddBase {
         cidade.descricao.toUpperCase() === response.localidade.toUpperCase()
       );
     });
-    console.log(cidadeFromCep);
+
     this.addressForm.get("IdCidade").setValue(cidadeFromCep.id);
-    console.log(this.addressForm.get("IdCidade"));
   }
   digitouCep(cep) {
     this.cepService.GetCep(cep).subscribe(
@@ -100,11 +101,7 @@ export class CreateUsuarioComponent extends AddBase {
     this.addressForm.get("rua").setValue("");
   }
   mudouEstado() {
-    console.log();
     var idEstado = this.addressForm.get("IdEstado").value;
-
-    console.log(this.todasCidades);
-    console.log(idEstado);
     this.cidades = this.todasCidades.filter(function (city) {
       return city.idEstado === idEstado;
     });

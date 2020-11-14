@@ -27,6 +27,7 @@ export class LoginComponent extends AddBase {
     super(loginService, notificationService);
   }
   logar(dadosLogin: Login) {
+    console.log('logando')
     this.loginService
       .login(dadosLogin)
       .pipe(first())
@@ -35,6 +36,7 @@ export class LoginComponent extends AddBase {
           this.router.navigate(["/"]);
         },
         (error) => {
+          console.log("errou")
           this.hasError=true;
           console.log(error.error);
           this.msgsErro=error.error.errors;

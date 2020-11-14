@@ -8,6 +8,7 @@ import { ApiUrl } from "../models/ApiUrl";
 })
 export class UsuarioService extends ServiceBaseService {
   constructor(protected http: HttpClient) {
-    super(http, ApiUrl.baseUrl + "Usuarios");
+    super(http);
+    this.baseUrl = ApiUrl.baseUrl + "Usuarios";
   }
 }

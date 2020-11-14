@@ -64,6 +64,6 @@ namespace TrocaToy.Controllers.v1
                 user = user,
                 token = token
             };
-        }
+            }
     }
 }

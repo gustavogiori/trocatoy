@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Infrastructure.Filter;
 using Infrastructure.Helpers;
@@ -47,6 +48,7 @@ namespace TrocaToy.Controllers.v1
         [Authorize]
         public ActionResult<PagedResponse<List<Proposta>>> GetPropostas([FromQuery] PaginationFilter filter)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity; 
             var route = Request.Path.Value;
             int countPages = 0;
             var pagedData = _propostaBusiness.GetAll(filter, out countPages).ToList();

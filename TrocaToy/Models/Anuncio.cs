@@ -1,6 +1,8 @@
 ﻿using Infrastructure.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrocaToy.Models
 {
@@ -12,8 +14,12 @@ namespace TrocaToy.Models
         public string TelefoneContato { get; set; }
         public DateTime? DataAnuncio { get; set; }
         public bool? Encerrado { get; set; }
+   
+   
 
-        public virtual Brinquedo IdBrinquedoNavigation { get; set; }
-        public virtual Endereco IdEnderecoEntregaNavigation { get; set; }
+        [ForeignKey("IdBrinquedo")]
+        public virtual Brinquedo Brinquedo { get; set; }
+        [ForeignKey("IdEnderecoEntrega")]
+        public virtual Endereco Endereco { get; set; }
     }
 }

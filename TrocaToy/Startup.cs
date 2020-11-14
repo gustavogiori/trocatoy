@@ -26,6 +26,7 @@ using GraphQL;
 using TrocaToy.GraphQL;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
+using TrocaToy.Business.Interfaces;
 
 namespace TrocaToy
 {
@@ -194,6 +195,7 @@ namespace TrocaToy
             services.AddTransient<IPropostaRepository, PropostaRepository>();
             services.AddTransient<IItensPropostaBusiness, ItensPropostaBusiness>();
             services.AddTransient<IItensPropostaRepository, ItensPropostaRepository>();
+            services.AddTransient<IAcessoBusiness, AcessoBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
