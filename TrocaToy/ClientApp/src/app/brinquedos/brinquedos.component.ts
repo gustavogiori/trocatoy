@@ -16,6 +16,10 @@ import "rxjs/add/operator/catch";
 import "rxjs/add/observable/from";
 import { Observable } from "rxjs/Observable";
 import { Router } from "@angular/router";
+import { PagerService } from "../services/pager.service";
+import { AnuncioService } from "app/services/anuncio.service";
+import { Anuncio } from "app/models/Anuncio";
+import { LoginService } from "app/services/login.service";
 
 @Component({
   selector: "app-brinquedos",
@@ -45,28 +49,45 @@ import { Router } from "@angular/router";
 export class BrinquedosComponent implements OnInit {
   searchBarState = "hidden";
   restaurants: any[];
-  pag : Number = 1 ;
-  contador : Number = 3;
+  pag: Number = 1;
+  contador: Number = 3;
+  totalItens: number = 0;
   searchForm: FormGroup;
   searchControl: FormControl;
-  nomes=[{nome:"teste"},
-  {nome:"teste"},
-  {nome:"teste"},
-  {nome:"teste"},
-  {nome:"teste"}];
+  nomes = Array<Anuncio>();
+  private allItems = Array<Anuncio>();
+  pager: any = {};
+  pagedItems: any[];
 
-  constructor(private fb: FormBuilder, private router: Router) {}
-mudouPagina(e){
-  alert(e);
-}
+  setPage(page: number) {
+    this.pager = this.pagerService.getPager(this.totalItens, page);
+    this.anuncioServer.getAll(page, 5).subscribe((data) => {
+      this.nomes = data.data;
+    });
+  }
+  constructor(private fb: FormBuilder, private router: Router,
+    private pagerService: PagerService,
+    private anuncioServer: AnuncioService,
+    protected loginService: LoginService) { }
+
+  isLogged() {
+    return this.loginService.currentUserValue.user.nome == true;
+  }
   ngOnInit() {
+    this.anuncioServer.getAll(1, 5).subscribe((data) => {
+      this.allItems = data.data;
+      this.totalItens = data.totalRecords;
+      this.setPage(1);
+    });
     this.searchControl = this.fb.control("");
     this.searchForm = this.fb.group({
       searchControl: this.searchControl,
     });
   }
-  clickDetalhe() {
-    this.router.navigateByUrl("/brinquedos/detalhes/1");
+  clickDetalhe(id) {
+
+    this.router.navigateByUrl("/brinquedos/detalhes/" + id);
+
   }
   toggleSearch() {
     this.searchBarState =

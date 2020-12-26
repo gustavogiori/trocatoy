@@ -7,8 +7,7 @@
             <h3>Erro ao cadastrar usuário:</h3>
             <ng-container *ngFor="let erro of msgsErro">
               <div class="col-xs-10 col-sm-5">
-                <span class="help-block pull-left has-error-block"
-                  ><i class="fa fa-remove"></i> {{ erro }}
+                <span class="help-block pull-left has-error-block"><i class="fa fa-remove"></i> {{ erro }}
                 </span>
               </div>
             </ng-container>
@@ -21,51 +20,59 @@
         </div>
 
         <div class="col-sm-6 col-xs-12">
-          <app-input
-            errorMessage="Campo obrigatório e com 5 caracteres"
-            label="Descrição"
-          >
-            <input
-              class="form-control"
-              formControlName="nome"
-              required
-              placeholder="Descrição"
-              autocomplete="off"
-            />
+          <app-input errorMessage="Campo obrigatório e com 5 caracteres" label="Descrição">
+            <input class="form-control" formControlName="nome" required placeholder="Descrição" autocomplete="off" />
           </app-input>
         </div>
 
         <div class="col-sm-3 col-xs-6">
           <app-input errorMessage="CPF inválido" label="Marca">
-            <input
-              type="text"
-              class="form-control"
-              formControlName="marca"
-              placeholder="Marca"
-            />
+            <input type="text" class="form-control" formControlName="marca" placeholder="Marca" />
           </app-input>
         </div>
 
         <div class="col-sm-5 col-xs-6">
-          <input
-            formControlName="novo"
-            type="checkbox"
-            class="form-check-input"
-          />
+          <input formControlName="novo" type="checkbox" class="form-check-input" />
           <label class="form-check-label" for="exampleCheck1">Novo</label>
         </div>
         <div class="row">
           <div class="col-xs-12">
-            <button
-              (click)="salvar(brinquedoForm.value)"
-              class="btn btn-success pull-right"
-              [disabled]="!brinquedoForm.valid"
-            >
+            <button (click)="salvar(brinquedoForm.value)" class="btn btn-success pull-right"
+              [disabled]="!brinquedoForm.valid">
               <i class="fa fa-floppy-o"></i> Cadastrar
             </button>
           </div>
         </div>
       </div>
     </form>
+    <div *ngFor="let progressInfo of progressInfos" class="mb-2">
+      <span>{{ progressInfo.fileName }}</span>
+      <div class="progress">
+        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+          attr.aria-valuenow="{{ progressInfo.value }}" aria-valuemin="0" aria-valuemax="100"
+          [ngStyle]="{ width: progressInfo.value + '%' }">
+          {{ progressInfo.value }}%
+        </div>
+      </div>
+    </div>
+
+    <label class="btn btn-default">
+      <input type="file" multiple [disabled]="!adicionouItem" (change)="selectFiles($event)" />
+    </label>
+
+    <button class="btn btn-success" [disabled]="!selectedFiles" (click)="uploadFiles()">
+      Enviar
+    </button>
+
+    <div class="alert alert-light" role="alert">{{ message }}</div>
+
+    <div class="card">
+      <div class="card-header">Fotos do brinquedo</div>
+      <ul class="list-group list-group-flush" *ngFor="let file of fileInfos">
+        <li class="list-group-item">
+          <img src="{{file.url}}" alt="Girl in a jacket" width="200" height="200">
+        </li>
+      </ul>
+    </div>
   </div>
 </app-region-page>

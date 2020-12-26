@@ -18,5 +18,7 @@ namespace TrocaToy.Models
         [ForeignKey("IdUsuario")]
         public virtual Usuario Usuario { get; set; }
 
+        public ICollection<Imagens> Imagens { get; set; }
+
     }
 }

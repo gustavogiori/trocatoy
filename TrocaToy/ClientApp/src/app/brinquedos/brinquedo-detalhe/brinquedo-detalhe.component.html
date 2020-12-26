@@ -5,44 +5,43 @@
         <div class="container-fliud">
           <div class="preview col-md-6">
             <div class="preview-pic tab-content">
-              <div class="tab-pane active" id="pic-1">
-                <img src="https://static.netshoes.com.br/produtos/bicicleta-south-stark-2021-aro-29-21-marchas-freios-a-disco-suspensao-dianteira/08/ACN-0075-108/ACN-0075-108_zoom1.jpg?ts=1597759050&" />
-              </div>
-              <div class="tab-pane" id="pic-2">
-                <img src="https://static.netshoes.com.br/produtos/bicicleta-south-stark-2021-aro-29-21-marchas-freios-a-disco-suspensao-dianteira/08/ACN-0075-108/ACN-0075-108_zoom1.jpg?ts=1597759050&" />
+              <div class="tab-pane active imgPrincipal" id="pic-1">
+                <img src={{urlPrincipal}} />
               </div>
             </div>
             <ul class="preview-thumbnail nav nav-tabs">
-              <li>
-                <a data-target="#pic-5" data-toggle="tab"
-                  ><img src="https://static.netshoes.com.br/produtos/bicicleta-south-stark-2021-aro-29-21-marchas-freios-a-disco-suspensao-dianteira/08/ACN-0075-108/ACN-0075-108_zoom1.jpg?ts=1597759050&"
-                /></a>
-              </li>
+              <ng-container *ngFor="let item of anuncio.brinquedo.imagens let i = index">
+                <li>
+                  <a (click)="mudouImagem(item.url)" data-target="#pic-{{i}}" data-toggle="tab"><img
+                      src={{item.url}} /></a>
+                </li>
+              </ng-container>
             </ul>
           </div>
-          <div class="details col-md-6">
-            <h3 class="product-title">Bicicleta South Stark 2021 - Aro 29 - 21 Marchas - Freios a Disco - Suspensão Dianteira - Azul e Preto</h3>
-            <p class="product-description">
-              Suspendisse quos? Tempus cras iure temporibus? Eu laudantium
-              cubilia sem sem! Repudiandae et! Massa senectus enim minim
-              sociosqu delectus posuere.
-            </p>
-            <h4 class="price">Usuário<span> - Gustavo</span></h4>
+          <div class="details col-md-4">
+            <h3 class="product-title">{{anuncio.nomeBrinquedo}}</h3>
+            <h4 class="price">Usuário<span> - {{anuncio.nomeUsuario}}</span></h4>
 
             <h5 class="sizes">
               disponibilidade:
-              <span class="size" data-toggle="tooltip" title="Troca"
-                >Troca</span
-              >
-              <span class="size" data-toggle="tooltip" title="Doação"
-                >Doação</span
-              >
+              <ng-container *ngIf="anuncio.tipoDisponibilidade===3">
+                <span class="size" data-toggle="tooltip" title="Troca">Troca</span>
+                <span class="size" data-toggle="tooltip" title="Doação">Doação</span>
+              </ng-container>
+              <ng-container *ngIf="anuncio.tipoDisponibilidade===1">
+                <span class="size" data-toggle="tooltip" title="Doação">Doação</span>
+              </ng-container>
+              <ng-container *ngIf="anuncio.tipoDisponibilidade===2">
+                <span class="size" data-toggle="tooltip" title="Troca">Troca</span>
+              </ng-container>
             </h5>
-            <div class="action">
-              <button class="add-to-cart btn btn-default" type="button">
-                Fazer proposta
-              </button>
-            </div>
+            <ng-container *ngIf="isLogged()">
+              <div class="action">
+                <button class="add-to-cart btn btn-default" type="button">
+                  Fazer proposta
+                </button>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>

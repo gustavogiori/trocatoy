@@ -27,6 +27,7 @@ namespace TrocaToy.Controllers.v1
     public class AnunciosController : BaseController
     {
         IAnuncioBusiness _anuncioBusiness;
+        IUsuarioBusiness _usuarioBusiness;
         /// <summary>
         /// AnunciosController
         /// </summary>
@@ -34,10 +35,12 @@ namespace TrocaToy.Controllers.v1
         /// <param name="unitOfWork"></param>
         /// <param name="uriService"></param>
         /// <param name="anuncioBusiness"></param>
-        public AnunciosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IAnuncioBusiness anuncioBusiness) : base(context, unitOfWork, uriService)
+        public AnunciosController(DbContext context, IUnitOfWork unitOfWork, IUriService uriService, IAnuncioBusiness anuncioBusiness, IUsuarioBusiness usuarioBusiness) : base(context, unitOfWork, uriService)
         {
             _context = context;
             _anuncioBusiness = anuncioBusiness;
+            _usuarioBusiness = usuarioBusiness;
+
         }
 
         /// <summary>
@@ -64,9 +67,7 @@ namespace TrocaToy.Controllers.v1
         /// </summary>
         /// <returns>Lista de anuncios</returns>
         /// <response code="200">Retorna lista com todos anuncios</response>
-        /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
-        [Authorize]
         public ActionResult<PagedResponse<List<Brinquedo>>> GetAnuncios([FromQuery] PaginationFilter filter)
         {
             try
@@ -161,6 +162,9 @@ namespace TrocaToy.Controllers.v1
         [HttpPost]
         public ActionResult<Anuncio> PostAnuncio([FromBody] Anuncio json)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var teste = identity.Claims.FirstOrDefault().Value;
+            json.IdUsuario = _usuarioBusiness.GetByCriteria(x => x.Email == teste).FirstOrDefault().Id;
             var anuncio = JsonService<Anuncio>.GetObject(json);
             try
             {

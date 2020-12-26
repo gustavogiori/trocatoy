@@ -1,16 +1,19 @@
-<div class="col col-xs-8">
-  <ul class="pagination hidden-xs pull-left">
-    <li><a (click)="backPage()" [class.disabled]="backButtonDisabled">«</a></li>
-    <ng-container *ngFor="let page of pages">
-      <li>
-        <a (click)="selectPage(page)" href="#">{{ page }}</a>
-      </li>
-    </ng-container>
-    <li *ngIf="!nextButtonDisabled"><a [class.disabled]="true">...</a></li>
-    <li *ngIf="!nextButtonDisabled">
-      <a href="#">{{ quantidadePaginas }}</a>
+<div class="text-right">
+  <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+    <li [ngClass]="{disabled:pager.currentPage === 1}">
+    <a (click)="setPage(1)"><<</a>
     </li>
-    <li><a [class.disabled]="nextButtonDisabled" (click)="nextPage()">»</a></li>
+    <li  [ngClass]="{disabled:pager.currentPage === 1}" >
+      <a (click)="setPage(pager.currentPage - 1)"><</a>
+    </li>
+    <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+      <a (click)="setPage(page)">{{page}}</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+      <a (click)="setPage(pager.currentPage + 1)">></a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+      <a (click)="setPage(pager.totalPages)">>></a>
+    </li>
   </ul>
-  <ul class="pagination hidden-xs pull-left"></ul>
 </div>

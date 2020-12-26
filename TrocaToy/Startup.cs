@@ -27,6 +27,9 @@ using TrocaToy.GraphQL;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
 using TrocaToy.Business.Interfaces;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.FileProviders;
+using TrocaToy.Repository.Interfaces;
 
 namespace TrocaToy
 {
@@ -51,7 +54,20 @@ namespace TrocaToy
             services.AddControllersWithViews();
             AddInjectionDependency(services);
             services.AddHttpContextAccessor();
-            services.AddMvc(options => options.ModelValidatorProviders.Clear());
+            services.AddMvc(options =>
+            {
+                options.ModelValidatorProviders.Clear();
+                options.AllowEmptyInputInBodyModelBinding = true;
+                foreach (var formatter in options.InputFormatters)
+                {
+                    if (formatter.GetType() == typeof(SystemTextJsonInputFormatter))
+                        ((SystemTextJsonInputFormatter)formatter).SupportedMediaTypes.Add(
+                            Microsoft.Net.Http.Headers.MediaTypeHeaderValue.Parse("text/plain"));
+                }
+            }).AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
             AddUriService(services);
             services.AddSpaStaticFiles(configuration =>
             {
@@ -196,6 +212,8 @@ namespace TrocaToy
             services.AddTransient<IItensPropostaBusiness, ItensPropostaBusiness>();
             services.AddTransient<IItensPropostaRepository, ItensPropostaRepository>();
             services.AddTransient<IAcessoBusiness, AcessoBusiness>();
+            services.AddTransient<IImagensBusiness, ImagensBusiness>();
+            services.AddTransient<IImagensRepository, ImagensRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -203,7 +221,15 @@ namespace TrocaToy
         {
             app.UseGraphQL<BrinquedoSchema>();
             app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
-
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")))
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), @"Resources"));
+            }
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+                RequestPath = new PathString("/Resources")
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

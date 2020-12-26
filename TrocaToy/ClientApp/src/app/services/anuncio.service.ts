@@ -14,15 +14,4 @@ export class AnuncioService extends ServiceBaseService {
     super(http);
     this.baseUrl = ApiUrl.baseUrl + "anuncios";
   }
-  getAllFilter(
-    pageNumber: number,
-    pageSize: number,
-    user: string
-  ): Observable<PagedResponse> {
-    return this.http
-      .get<PagedResponse>(
-        `${this.baseUrl}?PageNumber=${pageNumber}&PageSize=${pageSize}&user=${user}`
-      )
-      .pipe(map((result) => result));
-  }
 }

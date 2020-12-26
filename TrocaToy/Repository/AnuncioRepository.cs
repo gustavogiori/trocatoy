@@ -1,4 +1,5 @@
 ﻿using Infrastructure;
+using Infrastructure.Filter;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace TrocaToy.Repository
     /// <summary>
     /// AnuncioRepository
     /// </summary>
-    public class AnuncioRepository: Repository<Anuncio>, IAnuncioRepository
+    public class AnuncioRepository : Repository<Anuncio>, IAnuncioRepository
     {
         /// <summary>
         /// Constructor
@@ -20,6 +21,14 @@ namespace TrocaToy.Repository
         public AnuncioRepository(DbContext context) : base(context)
         {
 
+        }
+        /// <summary>
+        /// GetTable
+        /// </summary>
+        /// <returns></returns>
+        public override IQueryable<Anuncio> GetTable()
+        {
+            return base.GetTable().Include(x => x.Brinquedo).Include(x => x.Brinquedo.Imagens).Include(x => x.Endereco).Include(x => x.Usuario);
         }
     }
 }

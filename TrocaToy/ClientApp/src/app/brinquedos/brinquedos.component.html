@@ -24,7 +24,7 @@
   <div class="row">
     <div class="col-lg-9 px-0 pr-lg-2 mb-2 mb-lg-0">
       <div class="card border-light bg-white card proviewcard shadow-sm">
-        <ng-container *ngFor="let item of nomes| paginate: { itemsPerPage: contador, currentPage: pag }; let i = index">
+        <ng-container *ngFor="let item of nomes let i = index">
           <div class="card-body">
             <div class="col-lg-12 p-3 cardlist">
               <div class="col-lg-12">
@@ -33,31 +33,40 @@
                     <div class="row">
                       <div class="col-4 col-lg-3 col-xl-2">
                         <div class="row">
-                          <a (click)="clickDetalhe()" class="w-100">
+                          <a (click)="clickDetalhe(item.id)" class="w-100">
                             <img
-                              src="https://static.netshoes.com.br/produtos/bicicleta-south-stark-2021-aro-29-21-marchas-freios-a-disco-suspensao-dianteira/08/ACN-0075-108/ACN-0075-108_zoom1.jpg?ts=1597759050&"
-                              class="mx-auto d-block mb-1 addcartimg" />
+                              src="{{item.urlPrincipal}}"
+                              class="mx-auto d-block mb-2 addcartimg" />
                           </a>
                         </div>
                       </div>
                       <div class="col-8 col-lg-9 col-xl-10">
                         <div class="d-block text-truncate mb-1">
                           <strong>
-                            <a (click)="clickDetalhe()" class="cartproname">{{item.nome+i}}</a></strong>
+                            <a (click)="clickDetalhe()" class="cartproname">{{item.nomeBrinquedo}}</a></strong>
                         </div>
                         <div class="seller d-block">
                           <span>Usuário: </span>
-                          <span>SELL010</span>
+                          <span>{{item.nomeUsuario}}</span>
                         </div>
                         <div class="cartviewprice d-block">
-                          <input disabled value="teste" type="checkbox" />
-                          <span class="amt">Venda</span>
-                          <input disabled value="teste" type="checkbox" />
+                          <input disabled [checked]="item.tipoDisponibilidade =='1' || item.tipoDisponibilidade=='3'"
+                            type="checkbox" />
+                          <span class="amt">Dação</span>
+                          <input disabled [checked]="item.tipoDisponibilidade =='2' || item.tipoDisponibilidade=='3'"
+                            type="checkbox" />
                           <span class="amt">Troca</span>
                         </div>
-                        <div class="col-lg-3 col-5">
-                          <a (click)="clickDetalhe()" class="addcardrmv">Detalhes</a>
+                        <div class="cartviewprice d-block">
+                          <input disabled [checked]="item.brinquedoNovo"
+                            type="checkbox" />
+                          <span class="amt">Novo</span>
                         </div>
+
+                        <div class="col-lg-3 col-5"  >
+                          <a  (click)="clickDetalhe(item.id)" class="addcardrmv">Detalhes</a>
+                        </div>
+
                       </div>
                     </div>
                   </div>
@@ -69,19 +78,30 @@
             <a href="" class="btn btn-add-con">Fazer Proposta</a>
           </div>
         </ng-container>
-        <tr *ngFor="let usuario of nomes | paginate: { itemsPerPage: 2, currentPage: pag }; let i = index">
-          <td>{{i}}</td>
-          <td>{{usuario.nome}}</td>
-          <td>{{usuario.endereco}}</td>
-        </tr>
         <div class="text-right">
-          <pagination-controls (pageChange)="pag = $event"></pagination-controls>
+          <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+            <li [ngClass]="{disabled:pager.currentPage === 1}">
+            <a (click)="setPage(1)"><<</a>
+            </li>
+            <li  [ngClass]="{disabled:pager.currentPage === 1}" >
+              <a (click)="setPage(pager.currentPage - 1)"><</a>
+            </li>
+            <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+              <a (click)="setPage(page)">{{page}}</a>
+            </li>
+            <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+              <a (click)="setPage(pager.currentPage + 1)">></a>
+            </li>
+            <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+              <a (click)="setPage(pager.totalPages)">>></a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="restaurants?.length === 0" class="col-xs-12">
+  <div *ngIf="nomes?.length === 0" class="col-xs-12">
     <p class="lead text-center">
       Não foram encontrados itens para a sua busca.
     </p>

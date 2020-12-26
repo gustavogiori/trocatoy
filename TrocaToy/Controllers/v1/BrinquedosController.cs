@@ -152,15 +152,14 @@ namespace TrocaToy.Controllers.v1
         /// <response code="201">Retorna se o brinquedo foi criado com sucesso</response>
         /// <response code="400">Retorna se houve algum erro na criação do brinquedo.</response>
         [HttpPost]
-        [Authorize]
         public ActionResult<Brinquedo> PostBrinquedo([FromBody] Brinquedo json)
         {
             Brinquedo brinquedo = new Brinquedo();
             try
             {
-                //var identity = HttpContext.User.Identity as ClaimsIdentity;
-                //var teste = identity.Claims.FirstOrDefault().Value;
-                //json.IdUsuario = _usuarioBusiness.GetByCriteria(x => x.Email == teste).FirstOrDefault().Id;
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var teste = identity.Claims.FirstOrDefault().Value;
+                json.IdUsuario = _usuarioBusiness.GetByCriteria(x => x.Email == teste).FirstOrDefault().Id;
                 brinquedo = JsonService<Brinquedo>.GetObject(json);
 
                 var result = _brinquedoBusiness.Insert(brinquedo);

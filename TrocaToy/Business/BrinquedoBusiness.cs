@@ -28,7 +28,7 @@ namespace TrocaToy.Business
         }
         public override ValidationModel Insert(Brinquedo obj)
         {
-            obj.IdUsuario = _acessoBusiness.IdUsuarioLogado();
+           // obj.IdUsuario = _acessoBusiness.IdUsuarioLogado();
             return base.Insert(obj);
         }
     }

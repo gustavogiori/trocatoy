@@ -54,6 +54,7 @@ namespace TrocaToy.Models
 
             modelBuilder.Entity<Brinquedo>(entity =>
             {
+                entity.HasMany(e => e.Imagens).WithOne(x => x.Brinquedo).HasForeignKey(x => x.IdBrinquedo);
                 //entity.HasOne(d => d.IdUsuarioNavigation)
                 //    .WithMany(p => p.Brinquedo)
                 //   .HasForeignKey(d => d.IdUsuario)

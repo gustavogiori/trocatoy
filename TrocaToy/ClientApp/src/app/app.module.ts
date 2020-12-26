@@ -37,6 +37,8 @@ import { ListBrinquedoComponent } from "./brinquedos/list-brinquedo/list-brinque
 import { BrinquedoService } from "./services/brinquedo.service";
 import { EnderecoService } from "./services/endereco.service";
 import { NgxPaginationModule } from 'ngx-pagination';
+import { PagerService } from "./services/pager.service";
+import { ImagensService } from "./services/imagens.service";
 
 @NgModule({
   declarations: [
@@ -77,10 +79,12 @@ import { NgxPaginationModule } from 'ngx-pagination';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     NotificationService,
     ServiceBaseService,
-    AnuncioService,
     LoginService,
     BrinquedoService,
-    EnderecoService
+    EnderecoService,
+    PagerService,
+    AnuncioService,
+    ImagensService
   ],
   bootstrap: [AppComponent],
 })

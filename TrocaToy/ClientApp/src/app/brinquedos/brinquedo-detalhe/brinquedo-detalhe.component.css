@@ -6,7 +6,11 @@ body {
 
 img {
   max-width: 100%; }
-
+.imgPrincipal
+{
+  height: 600px;
+  width: 400px;
+}
 .preview {
   display: -webkit-box;
   display: -webkit-flex;
@@ -69,6 +73,8 @@ img {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  margin-top: -50px;
+  color: #0076ad;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
@@ -89,10 +95,10 @@ img {
   color: #ff9f1a; }
 
 .product-title, .rating, .product-description, .price, .vote, .sizes {
-  margin-bottom: 15px; }
+  margin-bottom: 35px; }
 
 .product-title {
-  margin-top: 0; }
+  margin-top: -100; }
 
 .size {
   margin-right: 10px; }

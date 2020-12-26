@@ -21,5 +21,10 @@ namespace TrocaToy.Repository
         {
 
         }
+
+        public override IQueryable<Brinquedo> GetTable()
+        {
+            return base.GetTable().Include(x => x.Imagens);
+        }
     }
 }

@@ -1,4 +1,5 @@
 export class Anuncio {
+  public id: string;
   public idBrinquedo: string;
   public idEnderecoEntrega: string;
   public tipoDisponibilidade: string;
@@ -7,4 +8,7 @@ export class Anuncio {
   public encerrado: boolean;
   public nomeBrinquedo: string;
   public enderecoNome: string;
+  public nomeUsuario: string;
+  public brinquedoNovo: boolean;
+  public urlPrincipal: string;
 }

@@ -26,5 +26,5 @@ export const ROUTES: Routes = [
     component: AddPropostaComponent,
     canActivate: [AuthGuard],
   },
-  { path: "**", redirectTo: "login" },
+  { path: "**", redirectTo: "" },
 ];

@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Filter;
 using Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,18 +29,22 @@ namespace Infrastructure
         public virtual IEnumerable<T> GetAll(PaginationFilter filter, out int countPages)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
-            var pagedData = table
+            var pagedData = GetTable()
                .Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                .Take(validFilter.PageSize)
                .ToList();
 
-            countPages = table.Count();
+            countPages = GetTable().Count();
 
             return pagedData;
         }
+        public virtual IQueryable<T> GetTable()
+        {
+            return table;
+        }
         public virtual T GetById(Guid id)
         {
-            return table.Find(id);
+            return GetTable().FirstOrDefault(x => x.Id == id);
         }
         public virtual T Insert(T obj)
         {
@@ -78,7 +83,7 @@ namespace Infrastructure
         }
         public virtual IEnumerable<T> GetByCriteria(Expression<Func<T, bool>> predicate, PaginationFilter filter, out int countPages)
         {
-            var tableResult = table.Where(predicate);
+            var tableResult = GetTable().Where(predicate);
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
 
             var pagedData = tableResult
