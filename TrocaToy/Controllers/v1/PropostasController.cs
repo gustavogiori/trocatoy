@@ -45,14 +45,14 @@ namespace TrocaToy.Controllers.v1
         /// <response code="200">Retorna lista com todos anuncios</response>
         /// <response code="401">Retorna quando não estiver autenticado.</response>
         [HttpGet]
-        [Authorize]
-        public ActionResult<PagedResponse<List<Proposta>>> GetPropostas([FromQuery] PaginationFilter filter)
+
+        public ActionResult<PagedResponse<RespostaPropostas>> GetPropostas([FromQuery] PaginationFilter filter)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity; 
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
             var route = Request.Path.Value;
             int countPages = 0;
-            var pagedData = _propostaBusiness.GetAll(filter, out countPages).ToList();
-            PagedResponse<List<Proposta>> pagedReponse = PaginationHelper.CreatePagedReponse(pagedData, filter, countPages, _uriService, route);
+            var pagedData = _propostaBusiness.GetCustomItems();
+            PagedResponse<RespostaPropostas> pagedReponse = PaginationHelper.CreatePagedReponse<RespostaPropostas>(pagedData, filter, countPages, _uriService, route);
 
             return Ok(pagedReponse);
         }
@@ -113,6 +113,61 @@ namespace TrocaToy.Controllers.v1
                 _unitOfWork.Rollback();
 
                 if (!PropostaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+
+                    throw;
+                }
+            }
+        }
+
+        [HttpPut()]
+        [Route("AceitarProposta")]
+        public ActionResult<Proposta> AceitarProposta(PropostaJson proposta)
+        {
+
+            try
+            {
+
+                _propostaBusiness.AceitarProposta(proposta.Id);
+                _unitOfWork.Commit();
+                return Ok();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _unitOfWork.Rollback();
+
+                if (!PropostaExists(proposta.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+
+                    throw;
+                }
+            }
+        }
+        [HttpPut()]
+        [Authorize]
+        [Route("RejeitarProposta")]
+        public ActionResult<Proposta> RejeitarProposta(PropostaJson proposta)
+        {
+
+            try
+            {
+                _propostaBusiness.RejeitarProposta(proposta.Id);
+                _unitOfWork.Commit();
+                return Ok();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _unitOfWork.Rollback();
+
+                if (!PropostaExists(proposta.Id))
                 {
                     return NotFound();
                 }

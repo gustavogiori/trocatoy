@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Business;
+using System;
 using TrocaToy.Models;
 using TrocaToy.Repository;
 
@@ -16,6 +17,25 @@ namespace TrocaToy.Business
         public PropostaBusiness(IPropostaRepository repository) : base(repository)
         {
 
+        }
+
+        public void AceitarProposta(Guid id)
+        {
+            ((IPropostaRepository)_repository).AceitarProposta(id);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public virtual RespostaPropostas GetCustomItems()
+        {
+            return ((IPropostaRepository)_repository).GetCustomItems();
+        }
+
+        public void RejeitarProposta(Guid id)
+        {
+            ((IPropostaRepository)_repository).RejeitarProposta(id);
         }
     }
 }

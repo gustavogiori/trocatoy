@@ -8,6 +8,7 @@ import { BrinquedosComponent } from "./brinquedos/brinquedos.component";
 import { ListBrinquedoComponent } from "./brinquedos/list-brinquedo/list-brinquedo.component";
 import { LoginComponent } from "./login/login.component";
 import { AddPropostaComponent } from "./proposta/add-proposta/add-proposta.component";
+import { ListPropostaComponent } from "./proposta/list-proposta/list-proposta.component";
 import { CreateUsuarioComponent } from "./usuario/create-usuario/create-usuario.component";
 import { AuthGuard } from "./_helper/auth.guard";
 
@@ -20,10 +21,10 @@ export const ROUTES: Routes = [
   { path: "anuncios", component: HomeAnuncioComponent },
   { path: "AddAnuncio", component: CreateAnuncioComponent },
   { path: "MeusBrinquedos", component: ListBrinquedoComponent },
-  { path: "AddBrinquedo", component: AddBrinquedoComponent },
+  { path: "propostas", component: ListPropostaComponent },
+  { path: "brinquedos/addProposta/:id", component: AddPropostaComponent, canActivate: [AuthGuard], },
   {
-    path: "Addproposta",
-    component: AddPropostaComponent,
+    path: "brinquedos/addProposta", component: AddPropostaComponent,
     canActivate: [AuthGuard],
   },
   { path: "**", redirectTo: "" },

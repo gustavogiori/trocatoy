@@ -39,6 +39,7 @@ import { EnderecoService } from "./services/endereco.service";
 import { NgxPaginationModule } from 'ngx-pagination';
 import { PagerService } from "./services/pager.service";
 import { ImagensService } from "./services/imagens.service";
+import { ListPropostaComponent } from "./proposta/list-proposta/list-proposta.component";
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { ImagensService } from "./services/imagens.service";
     HomeAnuncioComponent,
     AddBrinquedoComponent,
     ListBrinquedoComponent,
+    ListPropostaComponent
   ],
   imports: [
     BrowserModule,

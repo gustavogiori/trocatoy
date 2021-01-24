@@ -85,9 +85,11 @@ export class BrinquedosComponent implements OnInit {
     });
   }
   clickDetalhe(id) {
-
     this.router.navigateByUrl("/brinquedos/detalhes/" + id);
+  }
 
+  fazerProposta(id) {
+    this.router.navigateByUrl("/brinquedos/addProposta/" + id);
   }
   toggleSearch() {
     this.searchBarState =

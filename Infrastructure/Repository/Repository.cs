@@ -24,7 +24,7 @@ namespace Infrastructure
 
         public virtual IEnumerable<T> GetAll()
         {
-            return table.ToList();
+            return GetTable().ToList();
         }
         public virtual IEnumerable<T> GetAll(PaginationFilter filter, out int countPages)
         {

@@ -16,6 +16,5 @@ export class PaginationComponent implements OnInit {
   pagedItems: any[];
   ngOnInit() { }
   setPage(page: number) {
-    alert(page);
   }
 }

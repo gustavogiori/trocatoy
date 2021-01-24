@@ -1,3 +1,65 @@
-<p>
-  add-proposta works!
-</p>
+<app-region-page [Title]="titulo">
+  <div body>
+    <form [formGroup]="brinquedoForm" novalidate>
+      <div class="row">
+        <div>
+          <ng-container *ngIf="hasError">
+            <h3>Erro ao cadastrar usuário:</h3>
+            <ng-container *ngFor="let erro of msgsErro">
+              <div class="col-xs-10 col-sm-5">
+                <span class="help-block pull-left has-error-block"><i class="fa fa-remove"></i> {{ erro }}
+                </span>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-9">
+          <p class="lead">Dados da proposta:</p>
+        </div>
+        <div class="col-xs-12 col-sm-9">
+          <h4>Brinquedo desejado: {{anuncio.nomeBrinquedo}}</h4>
+        </div>
+        <div class="col-xs-12 col-sm-9">
+          <app-input errorMessage="Campo obrigatório." label="Tipo proposta">
+            <select data-show-subtext="true" data-live-search="true" class="selectpicker form-control"
+              (change)="mudouTipoProposta()" formControlName="tipoProposta" name="tipoProposta" value="tipoProposta"
+              required>
+              <option value="">Selecione um tipo...</option>
+              <option *ngFor="let estado of tiposProposta" [ngValue]="estado.id">
+                {{ estado.descricao }}
+              </option>
+            </select>
+          </app-input>
+        </div>
+        <ng-container *ngIf="brinquedoForm.value.tipoProposta===2">
+          <div class="col-sm-9 col-xs-9">
+            <app-input errorMessage="Campo obrigatório." label="Brinquedo Oferecido">
+              <select data-show-subtext="true" data-live-search="true" class="selectpicker form-control"
+                formControlName="IdBrinquedoProposto" name="IdBrinquedoProposto" value="IdBrinquedoProposto" required>
+                <option value="">Selecione um brinquedo...</option>
+                <option *ngFor="let brinquedo of brinquedos" [ngValue]="brinquedo.id">
+                  {{ brinquedo.nome }}
+                </option>
+              </select>
+            </app-input>
+          </div>
+        </ng-container>
+        <div class="col-sm-6 col-xs-12">
+          <app-input errorMessage="Campo obrigatório e com 5 caracteres" label="Comentário">
+            <input class="form-control" formControlName="Observacao" required placeholder="Comentário" />
+          </app-input>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <button (click)="salvar(brinquedoForm.value)" class="btn btn-success pull-right"
+              [disabled]="!brinquedoForm.valid">
+              <i class="fa fa-floppy-o"></i> Cadastrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</app-region-page>
